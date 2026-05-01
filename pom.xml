@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.codecrafters</groupId>
-    <artifactId>codecrafters-shell</artifactId>
+    <artifactId>codecrafters-shell-java</artifactId>
     <version>1.0</version>
 
    <properties>
