@@ -9,6 +9,9 @@ void main() {
         }
 
         switch (command) {
+            case "exit" -> {
+                return;
+            }
             default -> printCommandNotFound(command);
         }
     }
