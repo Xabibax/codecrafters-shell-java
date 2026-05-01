@@ -1,15 +1,19 @@
-import java.util.Scanner;
+void main() {
+    while (true) {
+        printPrompt();
+        final var scanner = new Scanner(System.in);
+        final var command = scanner.nextLine();
 
-public class Main {
-    public static void main(String[] args) throws Exception {
-        while (true) {
-            System.out.print("$ ");
-            final var scanner = new Scanner(System.in);
-            final var command = scanner.nextLine();
-
-            switch (command) {
-                default -> System.out.printf("%s: command not found%n", command);
-            }
+        switch (command) {
+            default -> printCommandNotFound(command);
         }
     }
+}
+
+private static void printCommandNotFound(String command) {
+    System.out.printf("%s: command not found%n", command);
+}
+
+private static void printPrompt() {
+    IO.print("$ ");
 }
