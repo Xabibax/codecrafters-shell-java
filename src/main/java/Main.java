@@ -2,19 +2,26 @@ void main() {
     while (true) {
         printPrompt();
         final var scanner = new Scanner(System.in);
-        final var command = scanner.nextLine();
+        final var line = scanner.nextLine();
 
-        if (command.isBlank()) {
-            continue;
-        }
+        final var command = Command.getCommandFrom(line);
+        final var parameters = Arrays.stream(line.split(" ")).skip(1).toList();
+
 
         switch (command) {
-            case "exit" -> {
+            case ECHO -> echo(parameters);
+            case EXIT -> {
                 return;
             }
-            default -> printCommandNotFound(command);
+            case NOT_FOUND -> printCommandNotFound(line);
+            case BLANK -> {}
         }
     }
+}
+
+private static void echo(List<String> parameters) {
+    String message = String.join(" ", parameters);
+    System.out.println(message);
 }
 
 private static void printCommandNotFound(String command) {
@@ -23,4 +30,26 @@ private static void printCommandNotFound(String command) {
 
 private static void printPrompt() {
     IO.print("$ ");
+}
+
+enum Command {
+    BLANK,
+    ECHO,
+    EXIT,
+    NOT_FOUND,
+    ;
+
+    public static Command getCommandFrom(String line) {
+        final var command = line.split(" ")[0];
+        if(command.isBlank()) {
+            return BLANK;
+        }
+
+        return switch (command) {
+            case "exit" -> EXIT;
+            case "echo" -> ECHO;
+            default -> NOT_FOUND;
+        };
+
+    }
 }
