@@ -4,6 +4,10 @@ void main() {
         final var scanner = new Scanner(System.in);
         final var command = scanner.nextLine();
 
+        if (command.isBlank()) {
+            continue;
+        }
+
         switch (command) {
             default -> printCommandNotFound(command);
         }
