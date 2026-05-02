@@ -38,9 +38,9 @@ private Path cd(Path currentDirectory, List<String> parameters) {
         default -> Paths.get(parameters.getFirst());
     };
 
-    final var relativePath = currentDirectory.resolve(path);
+    final var newDirectory = currentDirectory.resolve(path).toAbsolutePath();
 
-    return handleChangeCurrentDirectory(currentDirectory, relativePath);
+    return handleChangeCurrentDirectory(currentDirectory, newDirectory);
 }
 
 private static Path handleChangeCurrentDirectory(Path currentDirectory, Path newDirectory) {
@@ -48,7 +48,11 @@ private static Path handleChangeCurrentDirectory(Path currentDirectory, Path new
         IO.println("cd: %s: No such file or directory".formatted(newDirectory));
         return currentDirectory;
     }
-    return newDirectory.toAbsolutePath();
+    try {
+        return newDirectory.toFile().getCanonicalFile().toPath();
+    } catch (IOException e) {
+        throw new RuntimeException(e);
+    }
 }
 
 private Path getHomeDirectory() {
