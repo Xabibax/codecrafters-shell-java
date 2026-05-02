@@ -55,7 +55,9 @@ private static Path handleChangeCurrentDirectory(Path currentDirectory, Path new
 }
 
 private Path getHomeDirectory() {
-    return Paths.get(System.getProperty(USER_HOME));
+    String home = System.getenv("HOME");
+    String userHome = System.getProperty(USER_HOME);
+    return Paths.get(home != null ? home : userHome);
 }
 
 private Path getCurrentDirectory() {
