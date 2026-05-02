@@ -31,8 +31,17 @@ private Path cd(Path currentDirectory, List<String> parameters) throws IOExcepti
     if(parameters.isEmpty()) {
         return getHomeDirectory();
     }
+    String path = parameters.getFirst();
+    if("~".equalsIgnoreCase(path)) {
+        return getHomeDirectory();
+    }
 
-    final var newDirectory = currentDirectory.resolve(parameters.getFirst()).toAbsolutePath();
+    if(path.startsWith("~")) {
+        currentDirectory = getHomeDirectory();
+        path = "." + cdpath.substring(1);
+    }
+
+    final var newDirectory = currentDirectory.resolve(path).toAbsolutePath();
 
     return handleChangeCurrentDirectory(currentDirectory, newDirectory);
 }
