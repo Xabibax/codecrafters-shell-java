@@ -38,7 +38,7 @@ private Path cd(Path currentDirectory, List<String> parameters) throws IOExcepti
 
     if(path.startsWith("~")) {
         currentDirectory = getHomeDirectory();
-        path = "." + cdpath.substring(1);
+        path = "." + path.substring(1);
     }
 
     final var newDirectory = currentDirectory.resolve(path).toAbsolutePath();
