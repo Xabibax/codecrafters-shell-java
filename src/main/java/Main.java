@@ -32,13 +32,7 @@ private Path cd(Path currentDirectory, List<String> parameters) {
         return getHomeDirectory();
     }
 
-    final var path = switch (parameters.getFirst()) {
-        case "." -> currentDirectory;
-        case ".." -> currentDirectory.getParent();
-        default -> Paths.get(parameters.getFirst());
-    };
-
-    final var newDirectory = currentDirectory.resolve(path).toAbsolutePath();
+    final var newDirectory = currentDirectory.resolve(parameters.getFirst()).toAbsolutePath();
 
     return handleChangeCurrentDirectory(currentDirectory, newDirectory);
 }
