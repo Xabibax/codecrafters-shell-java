@@ -8,34 +8,46 @@ void main() {
         final var line = IO.readln();
 
 
-        final var splitLine = line.split(" ");
+        final var splitLine = Arrays.stream(line.split(" ")).toList();
 
-        final var command = Command.getCommandFrom(splitLine[0]);
-        final var parameters = Arrays.stream(splitLine).skip(1).toList();
+        final var command = splitLine.getFirst();
+        final var parameters = splitLine.stream().skip(1).toList();
 
-        if (!command.builtIn) {
-            final var res = handleExecutable(splitLine);
-            continue;
-        }
-
-        switch (command) {
+        switch (Command.getCommandFrom(command)) {
             case NOT_FOUND -> printCommandNotFound(line);
             case EXIT -> exit(parameters);
             case BLANK -> {
             }
             case ECHO -> echo(parameters);
             case TYPE -> type(parameters);
+            case EXECUTABLE -> handleExecutable(splitLine);
         }
     }
 }
 
-private int handleExecutable(String[] splitLine) {
+private int handleExecutable(List<String> splitLine) {
     final var paths = getPaths();
 
-    final var executable = splitLine[0];
-    final var parameters = Arrays.stream(splitLine).skip(1).collect(Collectors.joining(" "));
+    final var pb = new ProcessBuilder(splitLine);
+    pb.redirectErrorStream(true);
 
-    throw new RuntimeException("handleExecutable not yet implemented");
+    try {
+        final var process = pb.start();
+        final var exitValue = process.waitFor();
+        process.getInputStream().transferTo(System.out);
+
+        return exitValue;
+
+    } catch (Exception e) {
+        return handleExecutableException(e);
+    }
+}
+
+private int handleExecutableException(Exception e) {
+    return switch (e) {
+        case IOException _ -> 2;
+        default -> 1;
+    };
 }
 
 private static List<String> getPaths() {
