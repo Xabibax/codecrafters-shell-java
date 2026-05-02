@@ -1,6 +1,6 @@
 public static final String PATH = "PATH";
 
-void main() {
+void main() throws IOException {
     var currentDirectory = getCurrentDirectory();
 
     while (true) {
@@ -27,7 +27,7 @@ void main() {
     }
 }
 
-private Path cd(Path currentDirectory, List<String> parameters) {
+private Path cd(Path currentDirectory, List<String> parameters) throws IOException {
     if(parameters.isEmpty()) {
         return getHomeDirectory();
     }
@@ -37,16 +37,12 @@ private Path cd(Path currentDirectory, List<String> parameters) {
     return handleChangeCurrentDirectory(currentDirectory, newDirectory);
 }
 
-private static Path handleChangeCurrentDirectory(Path currentDirectory, Path newDirectory) {
+private static Path handleChangeCurrentDirectory(Path currentDirectory, Path newDirectory) throws IOException {
     if (!newDirectory.toAbsolutePath().toFile().isDirectory()) {
         IO.println("cd: %s: No such file or directory".formatted(newDirectory));
         return currentDirectory;
     }
-    try {
-        return newDirectory.toFile().getCanonicalFile().toPath();
-    } catch (IOException e) {
-        throw new RuntimeException(e);
-    }
+    return newDirectory.toFile().getCanonicalFile().toPath();
 }
 
 private Path getHomeDirectory() {
