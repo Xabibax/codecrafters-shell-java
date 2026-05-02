@@ -19,8 +19,14 @@ void main() {
             case ECHO -> echo(parameters);
             case TYPE -> type(parameters);
             case EXECUTABLE -> handleExecutable(splitLine);
+            case PWD -> pwd();
         }
     }
+}
+
+private void pwd() {
+    final var currentDirectory = System.getProperty("user.dir");
+    IO.println(currentDirectory);
 }
 
 private int handleExecutable(List<String> splitLine) {
@@ -85,7 +91,7 @@ private static void printPrompt() {
 }
 
 enum Command {
-    NOT_FOUND, BLANK, EXIT, ECHO, TYPE, EXECUTABLE(false),
+    NOT_FOUND, BLANK, EXIT, ECHO, TYPE, EXECUTABLE(false), PWD,
     ;
 
     final boolean builtIn;
