@@ -1,6 +1,8 @@
 public static final String PATH = "PATH";
 
 void main() {
+    var currentDirectory = getCurrentDirectory();
+
     while (true) {
         printPrompt();
         final var line = IO.readln();
@@ -19,13 +21,45 @@ void main() {
             case ECHO -> echo(parameters);
             case TYPE -> type(parameters);
             case EXECUTABLE -> handleExecutable(splitLine);
-            case PWD -> pwd();
+            case PWD -> pwd(currentDirectory);
+            case CD -> currentDirectory = cd(currentDirectory, parameters);
         }
     }
 }
 
-private void pwd() {
-    final var currentDirectory = System.getProperty("user.dir");
+private Path cd(Path currentDirectory, List<String> parameters) {
+    if(parameters.isEmpty()) {
+        return getHomeDirectory();
+    }
+
+    final var path = switch (parameters.getFirst()) {
+        case "." -> currentDirectory;
+        case ".." -> currentDirectory.getParent();
+        default -> Paths.get(parameters.getFirst());
+    };
+
+    final var relativePath = currentDirectory.resolve(path);
+
+    return handleChangeCurrentDirectory(currentDirectory, relativePath);
+}
+
+private static Path handleChangeCurrentDirectory(Path currentDirectory, Path newDirectory) {
+    if (!newDirectory.toAbsolutePath().toFile().isDirectory()) {
+        IO.println("cd: %s: No such file or directory".formatted(newDirectory));
+        return currentDirectory;
+    }
+    return newDirectory.toAbsolutePath();
+}
+
+private Path getHomeDirectory() {
+    return Paths.get(System.getProperty(USER_HOME));
+}
+
+private Path getCurrentDirectory() {
+    return Paths.get(System.getProperty(USER_DIR));
+}
+
+private void pwd(Path currentDirectory) {
     IO.println(currentDirectory);
 }
 
@@ -79,7 +113,7 @@ private static void type(List<String> parameters) {
 private static Optional<File> handleExecutableSearch(String command) {
     final var paths = getPaths();
 
-    return paths.stream().map(path -> Path.of(path, command).toFile()).filter(File::isFile).filter(File::canExecute).findAny();
+    return paths.stream().map(path -> Paths.get(path, command).toFile()).filter(File::isFile).filter(File::canExecute).findAny();
 }
 
 private static void printCommandNotFound(String command) {
@@ -91,7 +125,7 @@ private static void printPrompt() {
 }
 
 enum Command {
-    NOT_FOUND, BLANK, EXIT, ECHO, TYPE, EXECUTABLE(false), PWD,
+    NOT_FOUND, BLANK, EXIT, ECHO, TYPE, EXECUTABLE(false), PWD, CD,
     ;
 
     final boolean builtIn;
@@ -129,3 +163,6 @@ enum Command {
         return handleExecutableSearch(command).map(f -> command + " is " + f.getAbsolutePath()).orElse(Command.NOT_FOUND.type(command));
     }
 }
+
+public static final String USER_DIR = "user.dir";
+public static final String USER_HOME = "user.home";
