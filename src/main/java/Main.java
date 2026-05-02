@@ -1,5 +1,3 @@
-import jdk.jshell.spi.ExecutionControl;
-
 public static final String PATH = "PATH";
 
 void main() {
@@ -26,8 +24,6 @@ void main() {
 }
 
 private int handleExecutable(List<String> splitLine) {
-    final var paths = getPaths();
-
     final var pb = new ProcessBuilder(splitLine);
     pb.redirectErrorStream(true);
 
@@ -77,11 +73,7 @@ private static void type(List<String> parameters) {
 private static Optional<File> handleExecutableSearch(String command) {
     final var paths = getPaths();
 
-    return paths.stream()
-            .map(path -> Path.of(path, command).toFile())
-            .filter(File::isFile)
-            .filter(File::canExecute)
-            .findAny();
+    return paths.stream().map(path -> Path.of(path, command).toFile()).filter(File::isFile).filter(File::canExecute).findAny();
 }
 
 private static void printCommandNotFound(String command) {
@@ -128,8 +120,6 @@ enum Command {
     }
 
     private String typeExecutable(String command) {
-        return handleExecutableSearch(command)
-                .map(f -> command + " is " + f.getAbsolutePath())
-                .orElse(Command.NOT_FOUND.type(command));
+        return handleExecutableSearch(command).map(f -> command + " is " + f.getAbsolutePath()).orElse(Command.NOT_FOUND.type(command));
     }
 }
