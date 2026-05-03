@@ -47,9 +47,8 @@ public class Context {
         return currentDirectory;
     }
 
-    public Path setCurrendDirectory(Path newDirectory) {
+    public void setCurrendDirectory(Path newDirectory) {
         this.currentDirectory = newDirectory;
-        return this.currentDirectory;
     }
 
     private List<String> getPaths() {

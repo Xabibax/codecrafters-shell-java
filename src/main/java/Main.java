@@ -10,7 +10,7 @@ void main() {
     do handleCommand(context); while (true);
 }
 
-private int handleCommand(Context context) {
+private void handleCommand(Context context) {
     printPrompt();
     final var line = IO.readln();
 
@@ -23,7 +23,7 @@ private int handleCommand(Context context) {
         command = context.handleExecutableSearch(commandLabel).isPresent() ? EXECUTABLE : NOT_FOUND;
     }
 
-    return command.apply(context, line);
+    command.apply(context, line);
 }
 private void printPrompt() {
     IO.print("$ ");
