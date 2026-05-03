@@ -38,7 +38,7 @@ public class Context {
     }
 
     public Path getHomeDirectory() {
-        String home = System.getenv("HOME");
+        String home = System.getenv(HOME);
         String userHome = System.getProperty(USER_HOME);
         return Paths.get(home != null ? home : userHome);
     }
@@ -59,22 +59,11 @@ public class Context {
     public Optional<File> handleExecutableSearch(String command) {
         final var paths = getPaths();
 
-        return paths.stream().map(path -> Paths.get(path, command).toFile()).filter(File::isFile).filter(File::canExecute).findAny();
-    }
-
-    public int handleCommand() {
-        printPrompt();
-        final var line = IO.readln();
-
-        final var splitLine = Arrays.stream(line.split(" ")).toList();
-
-        final var command = splitLine.getFirst();
-
-        return Command.getCommandFrom(command).apply(this, line);
-    }
-
-    private static void printPrompt() {
-        IO.print("$ ");
+        return paths.stream()
+                .map(path -> Paths.get(path, command).toFile())
+                .filter(File::isFile)
+                .filter(File::canExecute)
+                .findAny();
     }
 
     public Type type() {

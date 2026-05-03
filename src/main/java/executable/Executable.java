@@ -6,8 +6,8 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.function.Function;
 
-import static app.Context.IO_FAIL;
 import static app.Context.FAIL;
+import static app.Context.IO_FAIL;
 
 public record Executable(Context context) implements Function<String, Integer> {
 

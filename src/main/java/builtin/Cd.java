@@ -5,8 +5,6 @@ import app.Context;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Arrays;
-import java.util.List;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 public record Cd(Context context) implements Function<String, Integer> {

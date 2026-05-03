@@ -15,7 +15,8 @@ public record Type(Context context) implements Function<String, Integer> {
 
         boolean emptyParameters = Objects.requireNonNull(parameters, "parameters shouldn't be null").isEmpty();
 
-        final var message = emptyParameters ? "" : parameters.getFirst();
+        final var commandLabel = emptyParameters ? "" : parameters.getFirst();
+        final var message = type(commandLabel);
         IO.println(message);
 
         return Context.SUCCESS;
@@ -28,14 +29,20 @@ public record Type(Context context) implements Function<String, Integer> {
             command = context().handleExecutableSearch(commandLabel).isPresent() ? EXECUTABLE : NOT_FOUND;
         }
 
+        return handleCommand(commandLabel, command);
+    }
+
+    private String handleCommand(String commandLabel, Command command) {
         return switch (command) {
-            case BLANK, NOT_FOUND -> Objects.requireNonNull(command) + ": not found";
+            case BLANK, NOT_FOUND -> Objects.requireNonNull(commandLabel) + ": not found";
             case EXECUTABLE -> typeExecutable(commandLabel);
             default -> command.name().toLowerCase() + " is a shell builtin";
         };
     }
 
-    private String typeExecutable(String command) {
-        return context().handleExecutableSearch(command).map(f -> command + " is " + f.getAbsolutePath()).orElse(type(command));
+    private String typeExecutable(String commandLabel) {
+        return context().handleExecutableSearch(commandLabel)
+                .map(f -> commandLabel + " is " + f.getAbsolutePath())
+                .orElse(handleCommand(commandLabel, NOT_FOUND));
     }
 }

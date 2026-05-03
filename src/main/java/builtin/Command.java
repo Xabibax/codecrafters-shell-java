@@ -2,9 +2,7 @@ package builtin;
 
 import app.Context;
 
-import java.util.Objects;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 
 public enum Command implements BiFunction<Context, String, Integer> {
     NOT_FOUND, BLANK, EXIT, ECHO, TYPE, EXECUTABLE(false), PWD, CD,
