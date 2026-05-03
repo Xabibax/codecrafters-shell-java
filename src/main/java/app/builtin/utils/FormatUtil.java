@@ -1,4 +1,4 @@
-package builtin.utils;
+package app.builtin.utils;
 
 import app.Parameters;
 import app.Parameters.Parameter;
@@ -37,11 +37,10 @@ public class FormatUtil {
         var parameterBuilder = Parameter.builder();
 
         var isBetweenQuotes = false;
-        var isPreviousCharSpace = false;
         for (final var c : line.chars().toArray()) {
             final var isQuote = QUOTE == c;
             final var isSpace = SPACE == c || TAB == c;
-            final var shouldSkipSpace = isPreviousCharSpace && isSpace && !isBetweenQuotes;
+            final var shouldSkipSpace = isSpace && !isBetweenQuotes;
             if (shouldSkipSpace) {
                 final var parameter = parameterBuilder.build();
                 parameterBuilder = Parameter.builder();
@@ -58,10 +57,7 @@ public class FormatUtil {
                 parameters.add(parameter);
                 continue;
             }
-
-            parameterBuilder.value().append(Character.toString(c));
-
-            isPreviousCharSpace = isSpace;
+            parameterBuilder.append(Character.toString(c));
         }
 
         final var parameter = parameterBuilder.build();

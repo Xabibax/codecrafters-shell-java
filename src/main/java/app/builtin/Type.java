@@ -1,4 +1,4 @@
-package builtin;
+package app.builtin;
 
 import app.Context;
 
@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.function.Function;
 
-import static builtin.Command.*;
+import static app.builtin.Command.*;
 
 public record Type(Context context) implements Function<String, Integer> {
     @Override

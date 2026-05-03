@@ -1,8 +1,8 @@
 import app.Context;
-import builtin.Command;
+import app.builtin.Command;
 
-import static builtin.Command.EXECUTABLE;
-import static builtin.Command.NOT_FOUND;
+import static app.builtin.Command.EXECUTABLE;
+import static app.builtin.Command.NOT_FOUND;
 
 @SuppressWarnings("InfiniteLoopStatement")
 void main() {
