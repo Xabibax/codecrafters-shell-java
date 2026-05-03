@@ -1,30 +1,26 @@
 import app.Context;
-import app.builtin.Command;
 
-import static app.builtin.Command.EXECUTABLE;
-import static app.builtin.Command.NOT_FOUND;
+public static final String SHELL_PROMPT = "$ ";
 
 @SuppressWarnings("InfiniteLoopStatement")
 void main() {
     Context context = new Context();
-    do handleCommand(context); while (true);
+    do {
+        printPrompt();
+        handleInput(context);
+    } while (true);
 }
 
-private void handleCommand(Context context) {
-    printPrompt();
-    final var line = IO.readln();
+private void handleInput(Context context) {
+    final var input = IO.readln();
 
-    final var splitLine = Arrays.stream(line.split(" ")).toList();
+    final var tokens = context.lexer().apply(input);
 
-    final var commandLabel = splitLine.getFirst();
+    final var ast = context.parser().apply(tokens);
 
-    Command command = Command.getCommandFrom(commandLabel);
-    if(NOT_FOUND.equals(command)) {
-        command = context.handleExecutableSearch(commandLabel).isPresent() ? EXECUTABLE : NOT_FOUND;
-    }
-
-    command.apply(context, line);
+    final var executionResult = context.executor().apply(ast);
 }
+
 private void printPrompt() {
-    IO.print("$ ");
+    IO.print(SHELL_PROMPT);
 }

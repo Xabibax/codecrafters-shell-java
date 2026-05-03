@@ -5,7 +5,7 @@ This is a starting point for Java solutions to the
 
 In this challenge, you'll build your own POSIX compliant shell that's capable of
 interpreting shell commands, running external programs and builtin commands like
-cd, pwd, echo and more. Along the way, you'll learn about shell command parsing,
+cd, pwd, echo and more. Along the way, you'll learn about shell type parsing,
 REPLs, builtin commands, and more.
 
 **Note**: If you're viewing this repo on GitHub, head over to
@@ -14,7 +14,7 @@ REPLs, builtin commands, and more.
 # Passing the first stage
 
 The entry point for your `shell` implementation is in `src/main/java/Main.java`.
-Study and uncomment the relevant code, then run the command below to execute the
+Study and uncomment the relevant code, then run the type below to execute the
 tests on our servers:
 
 ```sh

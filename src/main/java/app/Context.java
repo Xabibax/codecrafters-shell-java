@@ -1,6 +1,10 @@
 package app;
 
 import app.builtin.*;
+import app.executor.Executor;
+import app.lexer.Lexer;
+import app.parser.Parser;
+import app.token.Token;
 import executable.Executable;
 
 import java.io.File;
@@ -20,8 +24,12 @@ public class Context {
     public static final String USER_DIR = "user.dir";
     public static final String USER_HOME = "user.home";
 
-    private Path currentDirectory;
+    private Lexer lexer;
+    private Parser parser;
+    private Executor executor;
+
     private Type type;
+    private Path currentDirectory;
 
 
     private Cd cd;
@@ -33,6 +41,7 @@ public class Context {
     public Context() {
         this(Paths.get(System.getProperty(USER_DIR)));
     }
+
     public Context(Path currentDirectory) {
         this.currentDirectory = currentDirectory;
     }
@@ -55,14 +64,35 @@ public class Context {
         return Arrays.stream(System.getenv(PATH).split(":")).toList();
     }
 
-    public Optional<File> handleExecutableSearch(String command) {
+    public Optional<File> handleExecutableSearch(Token token) {
         final var paths = getPaths();
 
         return paths.stream()
-                .map(path -> Paths.get(path, command).toFile())
+                .map(path -> Paths.get(path, token.value()).toFile())
                 .filter(File::isFile)
                 .filter(File::canExecute)
                 .findAny();
+    }
+
+    public Executor executor() {
+        if (this.executor == null) {
+            this.executor = new Executor(this);
+        }
+        return executor;
+    }
+
+    public Parser parser() {
+        if (this.parser == null) {
+            this.parser = new Parser(this);
+        }
+        return this.parser;
+    }
+
+    public Lexer lexer() {
+        if (this.lexer == null) {
+            this.lexer = new Lexer(this);
+        }
+        return this.lexer;
     }
 
     public Type type() {
@@ -71,6 +101,7 @@ public class Context {
         }
         return this.type;
     }
+
     public Cd cd() {
         if (this.cd == null) {
             this.cd = new Cd(this);

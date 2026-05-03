@@ -1,28 +1,26 @@
 package app.builtin;
 
 import app.Context;
+import app.ast.SimpleCommand;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Arrays;
 import java.util.function.Function;
 
-public record Cd(Context context) implements Function<String, Integer> {
+public record Cd(Context context) implements Function<SimpleCommand, Integer> {
     @Override
-    public Integer apply(String line) {
+    public Integer apply(SimpleCommand command) {
 
-        final var parameters = Arrays.stream(line.split(" ")).skip(1).toList();
-
-        if(parameters.isEmpty()) {
+        if (command.parameters().isEmpty()) {
             context.setCurrendDirectory(context.getHomeDirectory());
         }
-        String path = parameters.getFirst();
-        if("~".equalsIgnoreCase(path)) {
+        String path = command.parameters().getFirst().value();
+        if ("~".equalsIgnoreCase(path)) {
             context.setCurrendDirectory(context.getHomeDirectory());
         }
 
         var currentDirectory = context.getCurrentDirectory();
-        if(path.startsWith("~")) {
+        if (path.startsWith("~")) {
             currentDirectory = context.getHomeDirectory();
             path = "." + path.substring(1);
         }

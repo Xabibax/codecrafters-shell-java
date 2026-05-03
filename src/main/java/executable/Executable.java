@@ -1,22 +1,25 @@
 package executable;
 
 import app.Context;
+import app.ast.SimpleCommand;
+import app.token.word.Word;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static app.Context.FAIL;
 import static app.Context.IO_FAIL;
 
-public record Executable(Context context) implements Function<String, Integer> {
+public record Executable(Context context) implements Function<SimpleCommand, Integer> {
 
     @Override
-    public Integer apply(String line) {
+    public Integer apply(SimpleCommand simpleCommand) {
 
-        final var splitLine = Arrays.stream(line.split(" ")).toList();
+        final var pbCommand = simpleCommand.parameters().stream().map(Word::value).collect(Collectors.toList());
+        pbCommand.addFirst(simpleCommand.command().value());
 
-        final var pb = new ProcessBuilder(splitLine);
+        final var pb = new ProcessBuilder(pbCommand);
         pb.redirectErrorStream(true);
 
         try {

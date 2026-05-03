@@ -1,26 +1,21 @@
 package app.builtin;
 
 import app.Context;
-import app.Parameters;
-import app.builtin.utils.FormatUtil;
+import app.ast.SimpleCommand;
+import app.token.Token;
 
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
-public record Echo(Context context) implements Function<String, Integer> {
-
+public record Echo(Context context) implements Function<SimpleCommand, Integer> {
 
     @Override
-    public Integer apply(String line) {
-        final Parameters parameters;
-        try {
-            parameters = FormatUtil.format(line)
-                    .subList(1);
-        } catch (FormatUtil.OddNumberSingleQuotesException e) {
-            return Context.FAIL;
-        }
+    public Integer apply(SimpleCommand command) {
+        String message = command.parameters().stream()
+                .map(Token::value).collect(Collectors.joining(" "));
 
-        IO.println(parameters.toString());
+        IO.println(message);
+
         return Context.SUCCESS;
     }
-
 }

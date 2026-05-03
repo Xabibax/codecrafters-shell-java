@@ -1,48 +1,44 @@
 package app.builtin;
 
 import app.Context;
+import app.ast.SimpleCommand;
+import app.token.Token;
 
-import java.util.Arrays;
 import java.util.Objects;
 import java.util.function.Function;
 
-import static app.builtin.Command.*;
+import static app.ast.Type.*;
 
-public record Type(Context context) implements Function<String, Integer> {
+public record Type(Context context) implements Function<SimpleCommand, Integer> {
     @Override
-    public Integer apply(String line) {
-        final var parameters = Arrays.stream(line.split(" ")).skip(1).toList();
-
-        boolean emptyParameters = Objects.requireNonNull(parameters, "parameters shouldn't be null").isEmpty();
-
-        final var commandLabel = emptyParameters ? "" : parameters.getFirst();
-        final var message = type(commandLabel);
+    public Integer apply(SimpleCommand command) {
+        final var parameter = command.parameters().isEmpty() ? Token.builder().build() : command.parameters().getFirst();
+        final var message = type(parameter);
         IO.println(message);
 
         return Context.SUCCESS;
     }
 
-
-    private String type(String commandLabel) {
-        var command = getCommandFrom(commandLabel);
+    private String type(Token token) {
+        var command = getTypeFrom(token);
         if (NOT_FOUND.equals(command)) {
-            command = context().handleExecutableSearch(commandLabel).isPresent() ? EXECUTABLE : NOT_FOUND;
+            command = context().handleExecutableSearch(token).isPresent() ? EXECUTABLE : NOT_FOUND;
         }
 
-        return handleCommand(commandLabel, command);
+        return handleCommand(token, command);
     }
 
-    private String handleCommand(String commandLabel, Command command) {
-        return switch (command) {
-            case BLANK, NOT_FOUND -> Objects.requireNonNull(commandLabel) + ": not found";
-            case EXECUTABLE -> typeExecutable(commandLabel);
-            default -> command.name().toLowerCase() + " is a shell builtin";
+    private String handleCommand(Token token, app.ast.Type type) {
+        return switch (type) {
+            case BLANK, NOT_FOUND -> Objects.requireNonNull(token.value()) + ": not found";
+            case EXECUTABLE -> typeExecutable(token);
+            default -> type.name().toLowerCase() + " is a shell builtin";
         };
     }
 
-    private String typeExecutable(String commandLabel) {
-        return context().handleExecutableSearch(commandLabel)
-                .map(f -> commandLabel + " is " + f.getAbsolutePath())
-                .orElse(handleCommand(commandLabel, NOT_FOUND));
+    private String typeExecutable(Token token) {
+        return context().handleExecutableSearch(token)
+                .map(f -> token.value() + " is " + f.getAbsolutePath())
+                .orElse(handleCommand(token, NOT_FOUND));
     }
 }
