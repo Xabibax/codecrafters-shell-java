@@ -15,7 +15,7 @@ public class CommandFactory {
 
     public SimpleCommand getCommand(Tokens tokens) {
         Word command = (Word) tokens.getFirst();
-        Words parameters = tokens.stream().skip(1).map(Word.class::cast).collect(Words.toList());
+        Words parameters = tokens.stream().skip(1).map(Word.class::cast).collect(Words.toList()).trim();
         return new SimpleCommand(command, parameters);
     }
 

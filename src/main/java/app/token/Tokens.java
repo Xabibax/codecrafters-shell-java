@@ -7,7 +7,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
 
-public class Tokens extends ArrayList<Token> implements ITokens<Token> {
+public class Tokens extends ArrayList<Token> implements ITokens<Token, Tokens> {
 
     public Tokens() {
         super();
@@ -24,6 +24,15 @@ public class Tokens extends ArrayList<Token> implements ITokens<Token> {
         return tokensJoiner();
     }
 
+    public Tokens trim(){
+        while (!isEmpty() && Token.State.SPACE.equals(getFirst().state())) {
+            removeFirst();
+        }
+        while (!isEmpty() && Token.State.SPACE.equals(getLast().state())) {
+            removeLast();
+        }
+        return this;
+    }
     public static Collector<Token, Tokens, Tokens> toList() {
         return new Tokens.CollectorImpl<>(Tokens::new,
                 Tokens::add,

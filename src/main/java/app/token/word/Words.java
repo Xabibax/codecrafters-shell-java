@@ -1,6 +1,7 @@
 package app.token.word;
 
 import app.token.ITokens;
+import app.token.Token;
 import app.token.Tokens;
 
 import java.util.*;
@@ -11,7 +12,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collector;
 
 
-public class Words extends ArrayList<Word> implements ITokens<Word> {
+public class Words extends ArrayList<Word> implements ITokens<Word, Words> {
 
     public Words() {
         super();
@@ -31,6 +32,16 @@ public class Words extends ArrayList<Word> implements ITokens<Word> {
                     return left;
                 },
                 Collections.unmodifiableSet(EnumSet.of(Collector.Characteristics.IDENTITY_FINISH)));
+    }
+
+    public Words trim(){
+        while (!isEmpty() && Token.State.SPACE.equals(getFirst().state())) {
+            removeFirst();
+        }
+        while (!isEmpty() && Token.State.SPACE.equals(getLast().state())) {
+            removeLast();
+        }
+        return this;
     }
 
     @Override
