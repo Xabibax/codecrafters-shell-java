@@ -62,6 +62,7 @@ record HandleCharacter(Lexer.LexerContext context) {
             case SINGLE_QUOTE -> context.state = SINGLE_QUOTES_OPEN;
             case DOUBLE_QUOTE -> context.state = DOUBLE_QUOTES_OPEN;
             case SPACE -> {
+                context.tokenBuilder.state(State.SPACE);
                 context.tokenBuilder.append(currentChar);
                 context.state = Lexer.State.SPACE;
             }
@@ -97,6 +98,7 @@ record HandleCharacter(Lexer.LexerContext context) {
             case SINGLE_QUOTE -> context.state = SINGLE_QUOTES_OPEN;
             case DOUBLE_QUOTE -> context.state = DOUBLE_QUOTES_OPEN;
             case SPACE -> {
+                context.tokenBuilder.state(State.SPACE);
                 context.tokenBuilder.append(currentChar);
                 context.state = Lexer.State.SPACE;
             }
