@@ -78,11 +78,6 @@ record HandleCharacter(Lexer.LexerContext context) {
     }
 
     void handleSingleQuotesOpen(char currentChar) {
-        if (context.isEscape()) {
-            context.tokenBuilder.append(currentChar);
-            context.setEscape(false);
-            return;
-        }
         switch (currentChar) {
             case SINGLE_QUOTE -> {
                 context.state = SINGLE_QUOTES_CLOSE;
