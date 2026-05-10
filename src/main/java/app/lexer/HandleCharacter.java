@@ -83,7 +83,6 @@ record HandleCharacter(Lexer.LexerContext context) {
                 context.state = SINGLE_QUOTES_CLOSE;
                 context.handleTokenEnd();
             }
-            case ESCAPE -> context.setEscape(true);
             default -> context.tokenBuilder.append(currentChar);
         }
     }
