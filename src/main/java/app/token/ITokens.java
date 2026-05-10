@@ -25,6 +25,6 @@ public interface  ITokens<T extends Token> extends List<T> {
                 case Token.State.SPACE -> res.append(" ");
             }
         }
-        return res.toString();
+        return res.toString().trim();
     }
 }

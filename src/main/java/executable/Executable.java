@@ -2,13 +2,10 @@ package executable;
 
 import app.Context;
 import app.ast.SimpleCommand;
-import app.token.Token;
 import app.token.Tokens;
-import app.token.word.Word;
 
 import java.io.IOException;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import static app.Context.FAIL;
 import static app.Context.IO_FAIL;
