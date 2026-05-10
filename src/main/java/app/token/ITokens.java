@@ -31,7 +31,7 @@ public interface  ITokens<T extends Token> extends List<T> {
     }
 
     default void trim() {
-        while (isEmpty() && Token.State.SPACE.equals(getFirst().state())) {
+        while (!isEmpty() && Token.State.SPACE.equals(getFirst().state())) {
             removeFirst();
         }
         while (!isEmpty() && Token.State.SPACE.equals(getLast().state())) {
