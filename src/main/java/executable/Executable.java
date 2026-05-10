@@ -3,6 +3,7 @@ package executable;
 import app.Context;
 import app.ast.SimpleCommand;
 import app.token.Token;
+import app.token.word.Word;
 import app.token.word.Words;
 
 import java.io.IOException;
@@ -52,13 +53,13 @@ public record Executable(Context context) implements Function<SimpleCommand, Int
                 case Token.State.NORMAL -> {
                     switch (previousParameter.state()) {
                         case NORMAL, SPACE -> res.add(parameter.value());
-                        case SINGLE_QUOTED, DOUBLE_QUOTED -> res.set(res.size() - 1, res.getLast() + parameter.value());
+                        case SINGLE_QUOTED, DOUBLE_QUOTED -> appendToken(res, parameter);
                     }
                 }
                 case Token.State.SINGLE_QUOTED, Token.State.DOUBLE_QUOTED -> {
                     switch (previousParameter.state()) {
                         case NORMAL, SINGLE_QUOTED, DOUBLE_QUOTED ->
-                                res.set(res.size() - 1, res.getLast() + parameter.value());
+                                appendToken(res, parameter);
                         case SPACE -> res.add(parameter.value());
                     }
                 }
@@ -67,6 +68,16 @@ public record Executable(Context context) implements Function<SimpleCommand, Int
             }
         }
         return res;
+    }
+
+    private static void appendToken(List<String> res, Word parameter) {
+        final var origin = res.getLast();
+        final var toAppend = switch (parameter.state()) {
+            case NORMAL, SPACE -> parameter.value();
+            case SINGLE_QUOTED -> "'%s'".formatted(parameter.value());
+            case DOUBLE_QUOTED -> "\"%s\"".formatted(parameter.value());
+        };
+        res.set(res.size() - 1, origin + toAppend);
     }
 
     private int handleExecutableException(Exception e) {
