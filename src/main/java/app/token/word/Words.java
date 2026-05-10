@@ -1,5 +1,6 @@
 package app.token.word;
 
+import app.token.ITokens;
 import app.token.Tokens;
 
 import java.util.*;
@@ -11,7 +12,7 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 
-public class Words extends ArrayList<Word> {
+public class Words extends ArrayList<Word> implements ITokens<Word> {
 
     public Words() {
         super();
@@ -35,7 +36,7 @@ public class Words extends ArrayList<Word> {
 
     @Override
     public String toString() {
-        return stream().map(Word::value).collect(Collectors.joining(" "));
+        return tokensJoiner();
     }
 
     public Words subList(int indexStart, int indexEnd) {

@@ -31,7 +31,6 @@ record HandleCharacter(Lexer.LexerContext context) {
             case ESCAPE -> {
                 context.handleTokenEnd();
                 context.state = Lexer.State.ESCAPE;
-                context.tokenBuilder.append(currentChar);
             }
             default -> {
                 context.handleTokenEnd();
@@ -43,13 +42,12 @@ record HandleCharacter(Lexer.LexerContext context) {
 
     void handleEscape(char currentChar) {
         context.tokenBuilder.append(currentChar);
-        context.state = Lexer.State.NORMAL;
+        context.state = NORMAL;
     }
 
     void handleDoubleQuotesOpen(char currentChar) {
         if (DOUBLE_QUOTE == currentChar) {
             context.state = DOUBLE_QUOTES_CLOSE;
-            context.handleTokenEnd();
         } else {
             context.state = DOUBLE_QUOTES_OPEN;
             context.tokenBuilder.append(currentChar);
@@ -58,25 +56,26 @@ record HandleCharacter(Lexer.LexerContext context) {
 
     void handleDoubleQuotesClose(char currentChar) {
         switch (currentChar) {
-            case SPACE -> {
-                context.state = Lexer.State.SPACE;
-                handleSpace(currentChar);
-            }
+            case DOUBLE_QUOTE -> context.state = DOUBLE_QUOTES_OPEN;
             case SINGLE_QUOTE -> {
-                context.state = SINGLE_QUOTES_OPEN;
-                handleSingleQuotesOpen(currentChar);
+                context.handleTokenEnd();
+                context.tokenBuilder.state(State.SINGLE_QUOTED);
+                context.state = Lexer.State.SINGLE_QUOTES_OPEN;
             }
-            case DOUBLE_QUOTE -> {
-                context.tokenBuilder.state(Token.State.DOUBLE_QUOTED);
-                context.state = DOUBLE_QUOTES_OPEN;
+            case SPACE -> {
+                context.handleTokenEnd();
+                context.tokenBuilder.append(currentChar);
+                context.tokenBuilder.state(State.SPACE);
+                context.state = Lexer.State.SPACE;
             }
             case ESCAPE -> {
-                context.state = NORMAL;
-                handleEscape(currentChar);
+                context.handleTokenEnd();
+                context.state = Lexer.State.ESCAPE;
             }
             default -> {
+                context.handleTokenEnd();
+                context.tokenBuilder.append(currentChar);
                 context.state = NORMAL;
-                handleNormal(currentChar);
             }
         }
     }
@@ -84,7 +83,6 @@ record HandleCharacter(Lexer.LexerContext context) {
     void handleSingleQuotesOpen(char currentChar) {
         if (SINGLE_QUOTE == currentChar) {
             context.state = SINGLE_QUOTES_CLOSE;
-            context.handleTokenEnd();
         } else {
             context.state = SINGLE_QUOTES_OPEN;
             context.tokenBuilder.append(currentChar);
@@ -93,25 +91,26 @@ record HandleCharacter(Lexer.LexerContext context) {
 
     void handleSingleQuotesClose(char currentChar) {
         switch (currentChar) {
-            case SPACE -> {
-                context.state = Lexer.State.SPACE;
-                handleSpace(currentChar);
-            }
-            case SINGLE_QUOTE -> {
-                context.tokenBuilder.state(Token.State.SINGLE_QUOTED);
-                context.state = Lexer.State.SINGLE_QUOTES_OPEN;
-            }
+            case SINGLE_QUOTE -> context.state = SINGLE_QUOTES_OPEN;
             case DOUBLE_QUOTE -> {
-                context.state = Lexer.State.DOUBLE_QUOTES_OPEN;
-                handleSingleQuotesOpen(currentChar);
+                context.handleTokenEnd();
+                context.tokenBuilder.state(State.DOUBLE_QUOTED);
+                context.state = DOUBLE_QUOTES_OPEN;
+            }
+            case SPACE -> {
+                context.handleTokenEnd();
+                context.tokenBuilder.append(currentChar);
+                context.tokenBuilder.state(State.SPACE);
+                context.state = Lexer.State.SPACE;
             }
             case ESCAPE -> {
-                context.state = Lexer.State.NORMAL;
-                handleEscape(currentChar);
+                context.handleTokenEnd();
+                context.state = Lexer.State.ESCAPE;
             }
             default -> {
-                context.state = Lexer.State.NORMAL;
-                handleNormal(currentChar);
+                context.handleTokenEnd();
+                context.tokenBuilder.append(currentChar);
+                context.state = NORMAL;
             }
         }
     }

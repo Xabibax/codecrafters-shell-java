@@ -29,7 +29,6 @@ public record Lexer(Context appContext) implements Function<String, Tokens> {
         }
 
         handleMergeableTokens(context);
-        handleTokenToKeep(context);
         if (!context.state.isTerminal()) {
             throw new IncoherentFinalStateException(context.state);
         }
@@ -43,12 +42,6 @@ public record Lexer(Context appContext) implements Function<String, Tokens> {
             case SPACE -> false;
             case NORMAL -> true;
         };
-    }
-
-    void handleTokenToKeep(LexerContext context) {
-        final var tokens = context.tokens().stream().filter(this::tokenToKeep).collect(Tokens.toList());
-        context.setTokens(tokens);
-
     }
 
     Token merge(Token currToken, Token nextToken) {

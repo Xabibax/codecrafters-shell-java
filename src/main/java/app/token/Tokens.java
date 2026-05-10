@@ -6,9 +6,8 @@ import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
-public class Tokens extends ArrayList<Token> {
+public class Tokens extends ArrayList<Token> implements ITokens<Token> {
 
     public Tokens() {
         super();
@@ -20,7 +19,12 @@ public class Tokens extends ArrayList<Token> {
         return res;
     }
 
-    public static Collector<Token, ?, Tokens> toList() {
+    @Override
+    public String toString() {
+        return tokensJoiner();
+    }
+
+    public static Collector<Token, Tokens, Tokens> toList() {
         return new Tokens.CollectorImpl<>(Tokens::new,
                 Tokens::add,
                 (left, right) -> {
@@ -30,24 +34,35 @@ public class Tokens extends ArrayList<Token> {
                 Collections.unmodifiableSet(EnumSet.of(Collector.Characteristics.IDENTITY_FINISH)));
     }
 
-    @Override
-    public String toString() {
-        return stream().map(Token::value).collect(Collectors.joining(" "));
+    public static Collector<Token, Tokens, String> joining() {
+        return new CollectorImpl<>(
+                Tokens::new,
+                ArrayList::add,
+                (r1, r2) -> {
+                    r1.addAll(r2);
+                    return r1;
+                },
+                Tokens::tokensJoiner,
+                Collections.emptySet());
     }
 
-    public record CollectorImpl<R>(Supplier<Tokens> supplier,
-                                   BiConsumer<Tokens, Token> accumulator,
-                                   BinaryOperator<Tokens> combiner,
-                                   Function<Tokens, R> finisher,
-                                   Set<Characteristics> characteristics
-    ) implements Collector<Token, Tokens, R> {
+    @SuppressWarnings("unchecked")
+    private static <I, R> Function<I, R> castingIdentity() {
+        return i -> (R) i;
+    }
 
-        @SuppressWarnings("unchecked")
+    private record CollectorImpl<T, R>(Supplier<Tokens> supplier,
+                                  BiConsumer<Tokens, T> accumulator,
+                                  BinaryOperator<Tokens> combiner,
+                                  Function<Tokens, R> finisher,
+                                  Set<Characteristics> characteristics
+    ) implements Collector<T, Tokens, R> {
+
         CollectorImpl(Supplier<Tokens> supplier,
-                      BiConsumer<Tokens, Token> accumulator,
+                      BiConsumer<Tokens, T> accumulator,
                       BinaryOperator<Tokens> combiner,
                       Set<Characteristics> characteristics) {
-            this(supplier, accumulator, combiner, i -> (R) i, characteristics);
+            this(supplier, accumulator, combiner, castingIdentity(), characteristics);
         }
     }
 

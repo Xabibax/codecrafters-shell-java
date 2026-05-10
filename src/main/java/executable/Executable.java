@@ -2,6 +2,8 @@ package executable;
 
 import app.Context;
 import app.ast.SimpleCommand;
+import app.token.Token;
+import app.token.Tokens;
 import app.token.word.Word;
 
 import java.io.IOException;
@@ -16,10 +18,9 @@ public record Executable(Context context) implements Function<SimpleCommand, Int
     @Override
     public Integer apply(SimpleCommand simpleCommand) {
 
-        final var pbCommand = simpleCommand.parameters().stream().map(Word::value).collect(Collectors.toList());
-        pbCommand.addFirst(simpleCommand.command().value());
+        final var parameters  = simpleCommand.parameters().stream().collect(Tokens.joining());
 
-        final var pb = new ProcessBuilder(pbCommand);
+        final var pb = new ProcessBuilder(simpleCommand.command() + " " + parameters);
         pb.redirectErrorStream(true);
 
         try {
