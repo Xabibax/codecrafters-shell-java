@@ -29,11 +29,21 @@ public record Lexer(Context appContext) implements Function<String, Tokens> {
         }
 
         handleMergeableTokens(context);
+        handleTrim(context);
         if (!context.state.isTerminal()) {
             throw new IncoherentFinalStateException(context.state);
         }
 
         return context.tokens;
+    }
+
+    private void handleTrim(LexerContext context) {
+        while (!context.tokens.isEmpty() && Token.State.SPACE.equals(context.tokens.getFirst().state())) {
+            context.tokens.removeFirst();
+        }
+        while (!context.tokens.isEmpty() && Token.State.SPACE.equals(context.tokens.getLast().state())) {
+            context.tokens.removeLast();
+        }
     }
 
     boolean tokenToKeep(Token token) {
