@@ -74,7 +74,7 @@ public record Lexer(Context appContext) implements Function<String, Tokens> {
     }
 
     public enum State {
-        NORMAL, SINGLE_QUOTES_OPEN(false), DOUBLE_QUOTES_OPEN(false), SINGLE_QUOTES_CLOSE, DOUBLE_QUOTES_CLOSE, ESCAPE(false), SPACE,
+        NORMAL, SINGLE_QUOTES_OPEN(false), DOUBLE_QUOTES_OPEN(false), SINGLE_QUOTES_CLOSE, DOUBLE_QUOTES_CLOSE, SPACE,
         ;
 
         final boolean isTerminal;
@@ -110,7 +110,7 @@ public record Lexer(Context appContext) implements Function<String, Tokens> {
             tokens.add(token);
             tokenBuilder.reset();
             switch (state) {
-                case NORMAL, ESCAPE, SPACE -> state = State.NORMAL;
+                case NORMAL, SPACE -> state = State.NORMAL;
                 case SINGLE_QUOTES_OPEN, SINGLE_QUOTES_CLOSE, DOUBLE_QUOTES_OPEN, DOUBLE_QUOTES_CLOSE -> {
                 }
             }
