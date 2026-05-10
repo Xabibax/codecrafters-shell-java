@@ -1,5 +1,7 @@
 package app.token;
 
+import app.lexer.Lexer;
+
 import java.util.List;
 
 public interface  ITokens<T extends Token> extends List<T> {
@@ -26,5 +28,14 @@ public interface  ITokens<T extends Token> extends List<T> {
             }
         }
         return res.toString().trim();
+    }
+
+    default void trim() {
+        while (isEmpty() && Token.State.SPACE.equals(getFirst().state())) {
+            removeFirst();
+        }
+        while (!isEmpty() && Token.State.SPACE.equals(getLast().state())) {
+            removeLast();
+        }
     }
 }

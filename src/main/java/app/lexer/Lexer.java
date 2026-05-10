@@ -38,12 +38,7 @@ public record Lexer(Context appContext) implements Function<String, Tokens> {
     }
 
     private void handleTrim(LexerContext context) {
-        while (!context.tokens.isEmpty() && Token.State.SPACE.equals(context.tokens.getFirst().state())) {
-            context.tokens.removeFirst();
-        }
-        while (!context.tokens.isEmpty() && Token.State.SPACE.equals(context.tokens.getLast().state())) {
-            context.tokens.removeLast();
-        }
+        context.tokens.trim();
     }
 
     boolean tokenToKeep(Token token) {

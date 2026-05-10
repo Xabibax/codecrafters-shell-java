@@ -9,6 +9,9 @@ import static app.ast.Type.NOT_FOUND;
 
 public record SimpleCommand(Word command, Words parameters) implements AST {
 
+    public SimpleCommand {
+        parameters.trim();
+    }
     public SimpleCommand(Word command) {
         this(command, Words.of());
     }
