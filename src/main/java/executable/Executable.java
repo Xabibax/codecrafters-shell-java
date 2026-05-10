@@ -72,11 +72,7 @@ public record Executable(Context context) implements Function<SimpleCommand, Int
 
     private static void appendToken(List<String> res, Word parameter) {
         final var origin = res.getLast();
-        final var toAppend = switch (parameter.state()) {
-            case NORMAL, SPACE -> parameter.value();
-            case SINGLE_QUOTED -> "'%s'".formatted(parameter.value());
-            case DOUBLE_QUOTED -> "\"%s\"".formatted(parameter.value());
-        };
+        final var toAppend = parameter.value();
         res.set(res.size() - 1, origin + toAppend);
     }
 
