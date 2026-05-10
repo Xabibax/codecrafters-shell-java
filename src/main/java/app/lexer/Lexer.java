@@ -98,6 +98,7 @@ public record Lexer(Context appContext) implements Function<String, Tokens> {
         Tokens tokens = new Tokens();
         TokenBuilder tokenBuilder = Token.builder();
         State state = NORMAL;
+        boolean escape = false;
 
         LexerContext(String input) {
             this.input = input;
@@ -141,6 +142,14 @@ public record Lexer(Context appContext) implements Function<String, Tokens> {
 
         public Tokens tokens() {
             return this.tokens;
+        }
+
+        public void setEscape(boolean escape) {
+            this.escape = escape;
+        }
+
+        public boolean isEscape() {
+            return escape;
         }
 
         public boolean isAtEnd() {

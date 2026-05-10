@@ -123,12 +123,30 @@ record HandleCharacter(Lexer.LexerContext context) {
                 context.state = Lexer.State.SINGLE_QUOTES_OPEN;
             }
             case DOUBLE_QUOTE -> {
+                if (context.isEscape()) {
+                    context.tokenBuilder.append(currentChar);
+                    context.setEscape(false);
+                    return;
+                }
                 context.handleTokenEnd();
                 context.tokenBuilder.state(Token.State.DOUBLE_QUOTED);
                 context.state = Lexer.State.DOUBLE_QUOTES_OPEN;
             }
-            case ESCAPE -> context.state = Lexer.State.ESCAPE;
+            case ESCAPE -> {
+                if (context.isEscape()) {
+                    context.tokenBuilder.append(currentChar);
+                    context.setEscape(false);
+                    return;
+                }
+                context.state = Lexer.State.ESCAPE;
+                context.setEscape(true);
+            }
             case SPACE -> {
+                if (context.isEscape()) {
+                    context.tokenBuilder.append(currentChar);
+                    context.setEscape(false);
+                    return;
+                }
                 if (context.tokenBuilder.isNonEmpty()) {
                     context.handleTokenEnd();
                 }
