@@ -1,11 +1,10 @@
 package app.lexer;
 
-import app.token.Token;
-import app.token.Token.State;
+import app.lexer.token.Token.State;
 
-import static app.lexer.Lexer.State.*;
+import static app.lexer.LexerState.*;
 
-record HandleCharacter(Lexer.LexerContext context) {
+record HandleCharacter(LexerContext context) {
 
     public static final char SINGLE_QUOTE = '\'';
     public static final char DOUBLE_QUOTE = '"';
@@ -64,7 +63,7 @@ record HandleCharacter(Lexer.LexerContext context) {
             case SPACE -> {
                 context.tokenBuilder.state(State.SPACE);
                 context.tokenBuilder.append(currentChar);
-                context.state = Lexer.State.SPACE;
+                context.state = LexerState.SPACE;
             }
             case ESCAPE -> {
                 context.setEscape(true);
@@ -94,15 +93,13 @@ record HandleCharacter(Lexer.LexerContext context) {
             case SPACE -> {
                 context.tokenBuilder.state(State.SPACE);
                 context.tokenBuilder.append(currentChar);
-                context.state = Lexer.State.SPACE;
+                context.state = LexerState.SPACE;
             }
             case ESCAPE -> {
                 context.setEscape(true);
                 context.state = NORMAL;
             }
-            default ->{
-                handleNormal(currentChar);
-            }
+            default -> handleNormal(currentChar);
         }
     }
 
@@ -123,16 +120,14 @@ record HandleCharacter(Lexer.LexerContext context) {
                 context.tokenBuilder.state(State.DOUBLE_QUOTED);
                 context.state = DOUBLE_QUOTES_OPEN;
             }
-            case ESCAPE -> {
-                context.setEscape(true);
-            }
+            case ESCAPE -> context.setEscape(true);
             case SPACE -> {
                 if (context.tokenBuilder.isNonEmpty()) {
                     context.handleTokenEnd();
                 }
                 context.tokenBuilder.state(State.SPACE);
                 context.tokenBuilder.append(currentChar);
-                context.state = Lexer.State.SPACE;
+                context.state = LexerState.SPACE;
             }
             default -> context.tokenBuilder.append(currentChar);
         }

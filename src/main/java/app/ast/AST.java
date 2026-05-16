@@ -1,8 +1,7 @@
 package app.ast;
 
-import app.Context;
+import app.AppContext;
 
-import java.util.function.Function;
-
-public interface AST extends Function<Context, Integer> {
+public sealed interface AST permits CommandNode {
+    Integer apply(AppContext appContext);
 }

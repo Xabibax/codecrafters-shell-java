@@ -1,10 +1,7 @@
-package app.token;
-
-import app.lexer.Lexer;
+package app.lexer.token;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public interface  ITokens<TOKEN extends Token, TOKENS extends List<TOKEN>> extends List<TOKEN> {
 

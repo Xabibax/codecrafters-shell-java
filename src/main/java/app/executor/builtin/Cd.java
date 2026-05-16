@@ -1,27 +1,27 @@
-package app.builtin;
+package app.executor.builtin;
 
-import app.Context;
-import app.ast.SimpleCommand;
+import app.AppContext;
+import app.ast.CommandNode;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.function.Function;
 
-public record Cd(Context context) implements Function<SimpleCommand, Integer> {
+public record Cd(AppContext appContext) implements Function<CommandNode, Integer> {
     @Override
-    public Integer apply(SimpleCommand command) {
+    public Integer apply(CommandNode commandNode) {
 
-        if (command.parameters().isEmpty()) {
-            context.setCurrendDirectory(context.getHomeDirectory());
+        if (commandNode.parameters().isEmpty()) {
+            appContext.setCurrendDirectory(appContext.getHomeDirectory());
         }
-        String path = command.parameters().getFirst().value();
+        String path = commandNode.parameters().getFirst().value();
         if ("~".equalsIgnoreCase(path)) {
-            context.setCurrendDirectory(context.getHomeDirectory());
+            appContext.setCurrendDirectory(appContext.getHomeDirectory());
         }
 
-        var currentDirectory = context.getCurrentDirectory();
+        var currentDirectory = appContext.getCurrentDirectory();
         if (path.startsWith("~")) {
-            currentDirectory = context.getHomeDirectory();
+            currentDirectory = appContext.getHomeDirectory();
             path = "." + path.substring(1);
         }
 
@@ -29,11 +29,11 @@ public record Cd(Context context) implements Function<SimpleCommand, Integer> {
 
         try {
             Path canonicalDirectory = handleChangeCurrentDirectory(currentDirectory, newDirectory);
-            context.setCurrendDirectory(canonicalDirectory);
+            appContext.setCurrendDirectory(canonicalDirectory);
         } catch (IOException e) {
-            return Context.FAIL;
+            return AppContext.FAIL;
         }
-        return Context.SUCCESS;
+        return AppContext.SUCCESS;
     }
 
     private Path handleChangeCurrentDirectory(Path currentDirectory, Path newDirectory) throws IOException {

@@ -1,34 +1,34 @@
-package app.builtin;
+package app.executor.builtin;
 
-import app.Context;
-import app.ast.SimpleCommand;
-import app.token.Token;
+import app.AppContext;
+import app.ast.CommandNode;
+import app.lexer.token.Token;
 
 import java.util.Objects;
 import java.util.function.Function;
 
-import static app.ast.Type.*;
+import static app.ast.command.Type.*;
 
-public record Type(Context context) implements Function<SimpleCommand, Integer> {
+public record Type(AppContext appContext) implements Function<CommandNode, Integer> {
     @Override
-    public Integer apply(SimpleCommand command) {
-        final var parameter = command.parameters().isEmpty() ? Token.builder().build() : command.parameters().getFirst();
+    public Integer apply(CommandNode commandNode) {
+        final var parameter = commandNode.parameters().isEmpty() ? Token.builder().build() : commandNode.parameters().getFirst();
         final var message = type(parameter);
         IO.println(message);
 
-        return Context.SUCCESS;
+        return AppContext.SUCCESS;
     }
 
     private String type(Token token) {
         var command = getTypeFrom(token);
         if (NOT_FOUND.equals(command)) {
-            command = context().handleExecutableSearch(token).isPresent() ? EXECUTABLE : NOT_FOUND;
+            command = appContext().handleExecutableSearch(token).isPresent() ? EXECUTABLE : NOT_FOUND;
         }
 
         return handleCommand(token, command);
     }
 
-    private String handleCommand(Token token, app.ast.Type type) {
+    private String handleCommand(Token token, app.ast.command.Type type) {
         return switch (type) {
             case BLANK, NOT_FOUND -> Objects.requireNonNull(token.value()) + ": not found";
             case EXECUTABLE -> typeExecutable(token);
@@ -37,7 +37,7 @@ public record Type(Context context) implements Function<SimpleCommand, Integer> 
     }
 
     private String typeExecutable(Token token) {
-        return context().handleExecutableSearch(token)
+        return appContext().handleExecutableSearch(token)
                 .map(f -> token.value() + " is " + f.getAbsolutePath())
                 .orElse(handleCommand(token, NOT_FOUND));
     }

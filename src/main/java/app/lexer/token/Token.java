@@ -1,4 +1,4 @@
-package app.token;
+package app.lexer.token;
 
 public abstract class Token {
 

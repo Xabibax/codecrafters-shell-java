@@ -1,6 +1,6 @@
-package app.token.word;
+package app.lexer.token.word;
 
-import app.token.Token;
+import app.lexer.token.Token;
 
 public class Word extends Token {
     public Word(String value, State state) {

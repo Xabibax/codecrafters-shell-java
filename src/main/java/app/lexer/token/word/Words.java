@@ -1,8 +1,8 @@
-package app.token.word;
+package app.lexer.token.word;
 
-import app.token.ITokens;
-import app.token.Token;
-import app.token.Tokens;
+import app.lexer.token.ITokens;
+import app.lexer.token.Token;
+import app.lexer.token.Tokens;
 
 import java.util.*;
 import java.util.function.BiConsumer;

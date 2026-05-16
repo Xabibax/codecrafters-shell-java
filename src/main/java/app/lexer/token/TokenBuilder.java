@@ -1,7 +1,8 @@
-package app.token;
+package app.lexer.token;
 
 
-import app.token.word.Word;
+import app.lexer.token.operator.Operator;
+import app.lexer.token.word.Word;
 
 public class TokenBuilder {
     private StringBuilder value = new StringBuilder();

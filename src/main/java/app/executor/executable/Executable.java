@@ -1,27 +1,27 @@
-package executable;
+package app.executor.executable;
 
-import app.Context;
-import app.ast.SimpleCommand;
-import app.token.Token;
-import app.token.word.Word;
-import app.token.word.Words;
+import app.AppContext;
+import app.ast.CommandNode;
+import app.lexer.token.Token;
+import app.lexer.token.word.Word;
+import app.lexer.token.word.Words;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-import static app.Context.FAIL;
-import static app.Context.IO_FAIL;
+import static app.AppContext.FAIL;
+import static app.AppContext.IO_FAIL;
 
-public record Executable(Context context) implements Function<SimpleCommand, Integer> {
+public record Executable(AppContext appContext) implements Function<CommandNode, Integer> {
 
     @Override
-    public Integer apply(SimpleCommand simpleCommand) {
+    public Integer apply(CommandNode commandNode) {
 
-        final var commands = merger(simpleCommand.parameters());
+        final var commands = merger(commandNode.parameters());
 
-        commands.addFirst(simpleCommand.command().value());
+        commands.addFirst(commandNode.command().value());
 
         final var pb = new ProcessBuilder(commands);
         pb.redirectErrorStream(true);

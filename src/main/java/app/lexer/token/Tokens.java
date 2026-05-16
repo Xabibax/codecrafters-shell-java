@@ -1,4 +1,4 @@
-package app.token;
+package app.lexer.token;
 
 import java.util.*;
 import java.util.function.BiConsumer;

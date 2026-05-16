@@ -1,24 +1,24 @@
-import app.Context;
+import app.AppContext;
 
 public static final String SHELL_PROMPT = "$ ";
 
 @SuppressWarnings("InfiniteLoopStatement")
 void main() {
-    Context context = new Context();
+    AppContext appContext = new AppContext();
     do {
         printPrompt();
-        handleInput(context);
+        handleInput(appContext);
     } while (true);
 }
 
-private void handleInput(Context context) {
+private void handleInput(AppContext appContext) {
     final var input = IO.readln();
 
-    final var tokens = context.lexer().apply(input);
+    final var tokens = appContext.factory.lexer(appContext).apply(input);
 
-    final var ast = context.parser().apply(tokens);
+    final var ast = appContext.factory.parser(appContext).apply(tokens);
 
-    final var executionResult = context.executor().apply(ast);
+    final var executionResult = appContext.factory.executor(appContext).apply(ast);
 }
 
 private void printPrompt() {
