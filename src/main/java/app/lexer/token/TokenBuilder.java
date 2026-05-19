@@ -1,12 +1,12 @@
 package app.lexer.token;
 
 
-import app.lexer.token.operator.Operator;
-import app.lexer.token.word.Word;
+import app.lexer.token.operator.OperatorDefault;
+import app.lexer.token.word.WordDefault;
 
 public class TokenBuilder {
     private StringBuilder value = new StringBuilder();
-    private Token.State state = Token.State.NORMAL;
+    private State state = State.NORMAL;
     private Type type = Type.WORD;
 
     TokenBuilder() {
@@ -26,7 +26,7 @@ public class TokenBuilder {
         return this;
     }
 
-    public TokenBuilder state(Token.State state) {
+    public TokenBuilder state(State state) {
         this.state = state;
         return this;
     }
@@ -43,7 +43,7 @@ public class TokenBuilder {
 
     public TokenBuilder reset() {
         value("");
-        state(Token.State.NORMAL);
+        state(State.NORMAL);
         return this;
     }
 
@@ -61,8 +61,8 @@ public class TokenBuilder {
 
     public Token build() {
         return switch (type) {
-            case WORD -> new Word(value, state);
-            case OPERATOR -> new Operator(value, state);
+            case WORD -> new WordDefault(value, state);
+            case OPERATOR -> new OperatorDefault(value, state);
         };
     }
 

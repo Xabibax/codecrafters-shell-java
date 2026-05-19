@@ -4,7 +4,7 @@ import app.ast.AST;
 
 import java.util.function.Function;
 
-public interface Executor extends Function<AST, Integer> {
+public interface Executor extends Function<AST, Result> {
     @Override
-    Integer apply(AST ast);
+    Result apply(AST ast);
 }

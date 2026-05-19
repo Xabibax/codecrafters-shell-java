@@ -1,8 +1,8 @@
 package app;
 
-import app.executor.builtin.*;
-import app.executor.executable.Executable;
 import app.executor.ExecutorDefault;
+import app.executor.builtin.*;
+import app.executor.executable.ExecutableDefault;
 import app.lexer.LexerDefault;
 import app.parser.ParserDefault;
 
@@ -15,7 +15,7 @@ public class Factory {
     private Exit exit;
     private Pwd pwd;
     private Echo echo;
-    private Executable executable;
+    private ExecutableDefault executable;
 
 
     public Factory() {
@@ -42,9 +42,9 @@ public class Factory {
         return executor;
     }
 
-    public Executable executable(AppContext appContext) {
+    public ExecutableDefault executable(AppContext appContext) {
         if (executable == null) {
-            executable = new Executable(appContext);
+            executable = new ExecutableDefault(appContext);
         }
         return executable;
     }

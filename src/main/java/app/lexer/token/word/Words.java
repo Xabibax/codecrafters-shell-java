@@ -1,8 +1,9 @@
 package app.lexer.token.word;
 
-import app.lexer.token.ITokens;
-import app.lexer.token.Token;
+import app.lexer.token.State;
 import app.lexer.token.Tokens;
+import app.lexer.token.TokensUtils;
+import app.lexer.token.Word;
 
 import java.util.*;
 import java.util.function.BiConsumer;
@@ -12,7 +13,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collector;
 
 
-public class Words extends ArrayList<Word> implements ITokens<Word, Words> {
+public class Words extends ArrayList<Word> {
 
     public Words() {
         super();
@@ -34,11 +35,11 @@ public class Words extends ArrayList<Word> implements ITokens<Word, Words> {
                 Collections.unmodifiableSet(EnumSet.of(Collector.Characteristics.IDENTITY_FINISH)));
     }
 
-    public Words trim(){
-        while (!isEmpty() && Token.State.SPACE.equals(getFirst().state())) {
+    public Words trim() {
+        while (!isEmpty() && State.SPACE.equals(getFirst().state())) {
             removeFirst();
         }
-        while (!isEmpty() && Token.State.SPACE.equals(getLast().state())) {
+        while (!isEmpty() && State.SPACE.equals(getLast().state())) {
             removeLast();
         }
         return this;
@@ -46,7 +47,7 @@ public class Words extends ArrayList<Word> implements ITokens<Word, Words> {
 
     @Override
     public String toString() {
-        return tokensJoiner();
+        return TokensUtils.tokensJoiner(this.toTokens());
     }
 
     public Words subList(int indexStart, int indexEnd) {

@@ -2,14 +2,18 @@ package app.executor.builtin;
 
 import app.AppContext;
 import app.ast.CommandNode;
+import app.executor.Result;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.function.Function;
 
-public record Cd(AppContext appContext) implements Function<CommandNode, Integer> {
+import static app.executor.ResultDefault.FAIL;
+import static app.executor.ResultDefault.SUCCESS;
+
+public record Cd(AppContext appContext) implements Function<CommandNode, Result> {
     @Override
-    public Integer apply(CommandNode commandNode) {
+    public Result apply(CommandNode commandNode) {
 
         if (commandNode.parameters().isEmpty()) {
             appContext.setCurrendDirectory(appContext.getHomeDirectory());
@@ -31,9 +35,9 @@ public record Cd(AppContext appContext) implements Function<CommandNode, Integer
             Path canonicalDirectory = handleChangeCurrentDirectory(currentDirectory, newDirectory);
             appContext.setCurrendDirectory(canonicalDirectory);
         } catch (IOException e) {
-            return AppContext.FAIL;
+            return FAIL;
         }
-        return AppContext.SUCCESS;
+        return SUCCESS;
     }
 
     private Path handleChangeCurrentDirectory(Path currentDirectory, Path newDirectory) throws IOException {

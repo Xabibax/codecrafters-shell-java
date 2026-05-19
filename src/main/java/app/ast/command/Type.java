@@ -2,11 +2,13 @@ package app.ast.command;
 
 import app.AppContext;
 import app.ast.CommandNode;
+import app.executor.Result;
+import app.executor.ResultDefault;
 import app.lexer.token.Token;
 
 import java.util.function.BiFunction;
 
-public enum Type implements BiFunction<AppContext, CommandNode, Integer> {
+public enum Type implements BiFunction<AppContext, CommandNode, Result> {
     NOT_FOUND, BLANK, EXIT, ECHO, TYPE, EXECUTABLE(false), PWD, CD,
     ;
 
@@ -32,12 +34,16 @@ public enum Type implements BiFunction<AppContext, CommandNode, Integer> {
         }
     }
 
+    private static Result handleBlank() {
+        return ResultDefault.WARNING;
+    }
+
     @Override
-    public Integer apply(AppContext appContext, CommandNode commandNode) {
+    public Result apply(AppContext appContext, CommandNode commandNode) {
         return switch (this) {
-            case NOT_FOUND -> printCommandNotFound(commandNode);
+            case NOT_FOUND -> handleCommandNotFound(commandNode);
             case EXIT -> appContext.factory.exit(appContext).apply(commandNode);
-            case BLANK -> AppContext.WARNING;
+            case BLANK -> handleBlank();
             case ECHO -> appContext.factory.echo(appContext).apply(commandNode);
             case TYPE -> appContext.factory.type(appContext).apply(commandNode);
             case EXECUTABLE -> appContext.factory.executable(appContext).apply(commandNode);
@@ -46,10 +52,9 @@ public enum Type implements BiFunction<AppContext, CommandNode, Integer> {
         };
     }
 
-    private Integer printCommandNotFound(CommandNode commandNode) {
+    private Result handleCommandNotFound(CommandNode commandNode) {
+        String commandNotFound = "%s: command not found%n".formatted(commandNode.command().value());
 
-        IO.print("%s: command not found%n".formatted(commandNode.command().value()));
-
-        return AppContext.WARNING;
+        return ResultDefault.warning(commandNotFound);
     }
 }

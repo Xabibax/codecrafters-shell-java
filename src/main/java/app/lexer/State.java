@@ -1,16 +1,15 @@
 package app.lexer;
 
-public enum LexerState {
-    NORMAL, SINGLE_QUOTES_OPEN(false), DOUBLE_QUOTES_OPEN(false), SINGLE_QUOTES_CLOSE, DOUBLE_QUOTES_CLOSE, SPACE,
-    ;
+enum State {
+    NORMAL, SINGLE_QUOTES_OPEN(false), DOUBLE_QUOTES_OPEN(false), SINGLE_QUOTES_CLOSE, DOUBLE_QUOTES_CLOSE, SPACE, REDIRECT_OUTPUT(false);
 
     final boolean isTerminal;
 
-    LexerState() {
+    State() {
         this.isTerminal = true;
     }
 
-    LexerState(boolean isTerminal) {
+    State(boolean isTerminal) {
         this.isTerminal = isTerminal;
     }
 

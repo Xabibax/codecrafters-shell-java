@@ -7,7 +7,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
 
-public class Tokens extends ArrayList<Token> implements ITokens<Token, Tokens> {
+public class Tokens extends ArrayList<Token> {
 
     public Tokens() {
         super();
@@ -19,20 +19,6 @@ public class Tokens extends ArrayList<Token> implements ITokens<Token, Tokens> {
         return res;
     }
 
-    @Override
-    public String toString() {
-        return tokensJoiner();
-    }
-
-    public Tokens trim(){
-        while (!isEmpty() && Token.State.SPACE.equals(getFirst().state())) {
-            removeFirst();
-        }
-        while (!isEmpty() && Token.State.SPACE.equals(getLast().state())) {
-            removeLast();
-        }
-        return this;
-    }
     public static Collector<Token, Tokens, Tokens> toList() {
         return new Tokens.CollectorImpl<>(Tokens::new,
                 Tokens::add,
@@ -60,11 +46,61 @@ public class Tokens extends ArrayList<Token> implements ITokens<Token, Tokens> {
         return i -> (R) i;
     }
 
+    @Override
+    public String toString() {
+        return tokensJoiner();
+    }
+
+    public Tokens trim() {
+        while (!isEmpty() && State.SPACE.equals(getFirst().state())) {
+            removeFirst();
+        }
+        while (!isEmpty() && State.SPACE.equals(getLast().state())) {
+            removeLast();
+        }
+        return this;
+    }
+
+    public Tokens toTokens() {
+        return this;
+    }
+
+    public String tokensJoiner() {
+        final List<String> res = new ArrayList<>();
+        int size = size();
+        for (int i = 0; i < size; i++) {
+            final var parameter = get(i);
+            if (i == 0) {
+                res.add(parameter.value());
+                continue;
+            }
+            final var previousParameter = get(i - 1);
+            switch (parameter.state()) {
+                case State.NORMAL -> {
+                    switch (previousParameter.state()) {
+                        case NORMAL, SPACE -> res.add(parameter.value());
+                        case SINGLE_QUOTED, DOUBLE_QUOTED -> res.set(res.size() - 1, res.getLast() + parameter.value());
+                    }
+                }
+                case State.SINGLE_QUOTED, State.DOUBLE_QUOTED -> {
+                    switch (previousParameter.state()) {
+                        case NORMAL, SINGLE_QUOTED, DOUBLE_QUOTED ->
+                                res.set(res.size() - 1, res.getLast() + parameter.value());
+                        case SPACE -> res.add(parameter.value());
+                    }
+                }
+                case State.SPACE -> {
+                }
+            }
+        }
+        return String.join(" ", res);
+    }
+
     private record CollectorImpl<T, R>(Supplier<Tokens> supplier,
-                                  BiConsumer<Tokens, T> accumulator,
-                                  BinaryOperator<Tokens> combiner,
-                                  Function<Tokens, R> finisher,
-                                  Set<Characteristics> characteristics
+                                       BiConsumer<Tokens, T> accumulator,
+                                       BinaryOperator<Tokens> combiner,
+                                       Function<Tokens, R> finisher,
+                                       Set<Characteristics> characteristics
     ) implements Collector<T, Tokens, R> {
 
         CollectorImpl(Supplier<Tokens> supplier,

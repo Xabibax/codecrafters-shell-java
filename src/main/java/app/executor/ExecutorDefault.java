@@ -5,7 +5,7 @@ import app.ast.AST;
 
 public record ExecutorDefault(AppContext appContext) implements Executor {
     @Override
-    public Integer apply(AST ast) {
+    public Result apply(AST ast) {
         return ast.apply(appContext());
     }
 }

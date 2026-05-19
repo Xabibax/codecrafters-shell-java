@@ -2,18 +2,18 @@ package app.executor.builtin;
 
 import app.AppContext;
 import app.ast.CommandNode;
+import app.executor.Result;
+import app.executor.ResultDefault;
 import app.lexer.token.Tokens;
 
 import java.util.function.Function;
 
-public record Echo(AppContext appContext) implements Function<CommandNode, Integer> {
+public record Echo(AppContext appContext) implements Function<CommandNode, Result> {
 
     @Override
-    public Integer apply(CommandNode commandNode) {
+    public Result apply(CommandNode commandNode) {
         String message = commandNode.parameters().stream().collect(Tokens.joining());
 
-        IO.println(message);
-
-        return AppContext.SUCCESS;
+        return ResultDefault.success(message);
     }
 }

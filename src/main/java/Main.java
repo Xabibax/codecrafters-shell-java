@@ -19,6 +19,8 @@ private void handleInput(AppContext appContext) {
     final var ast = appContext.factory.parser(appContext).apply(tokens);
 
     final var executionResult = appContext.factory.executor(appContext).apply(ast);
+
+    IO.println(executionResult.getOutput());
 }
 
 private void printPrompt() {

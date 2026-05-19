@@ -10,10 +10,6 @@ import java.util.List;
 import java.util.Optional;
 
 public class AppContext {
-    public static final int SUCCESS = 0;
-    public static final int FAIL = 1;
-    public static final int WARNING = 2;
-    public static final int IO_FAIL = 3;
     public static final String PATH = "PATH";
     public static final String HOME = "HOME";
     public static final String USER_DIR = "user.dir";

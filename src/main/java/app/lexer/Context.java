@@ -4,17 +4,17 @@ import app.lexer.token.Token;
 import app.lexer.token.TokenBuilder;
 import app.lexer.token.Tokens;
 
-import static app.lexer.LexerState.NORMAL;
+import static app.lexer.State.NORMAL;
 
-public class LexerContext {
+class Context {
     String input;
     int pos;
     Tokens tokens = new Tokens();
     TokenBuilder tokenBuilder = Token.builder();
-    LexerState state = NORMAL;
+    State state = NORMAL;
     boolean escape = false;
 
-    LexerContext(String input) {
+    Context(String input) {
         this.input = input;
         this.pos = 0;
     }
@@ -24,7 +24,7 @@ public class LexerContext {
         tokens.add(token);
         tokenBuilder.reset();
         switch (state) {
-            case NORMAL, SPACE -> state = LexerState.NORMAL;
+            case NORMAL, SPACE -> state = State.NORMAL;
             case SINGLE_QUOTES_OPEN, SINGLE_QUOTES_CLOSE, DOUBLE_QUOTES_OPEN, DOUBLE_QUOTES_CLOSE -> {
             }
         }
@@ -46,11 +46,11 @@ public class LexerContext {
         this.tokenBuilder = tokenBuilder;
     }
 
-    public LexerState getState() {
+    public State getState() {
         return state;
     }
 
-    public void setState(LexerState state) {
+    public void setState(State state) {
         this.state = state;
     }
 
@@ -58,12 +58,12 @@ public class LexerContext {
         return this.tokens;
     }
 
-    public void setEscape(boolean escape) {
-        this.escape = escape;
-    }
-
     public boolean isEscape() {
         return escape;
+    }
+
+    public void setEscape(boolean escape) {
+        this.escape = escape;
     }
 
     public boolean isAtEnd() {

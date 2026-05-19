@@ -2,14 +2,17 @@ package app.executor.builtin;
 
 import app.AppContext;
 import app.ast.CommandNode;
+import app.executor.Result;
 
 import java.util.function.Function;
 
-public record Exit(AppContext appContext) implements Function<CommandNode, Integer> {
+import static app.executor.ResultDefault.SUCCESS;
+
+public record Exit(AppContext appContext) implements Function<CommandNode, Result> {
 
     @Override
-    public Integer apply(CommandNode commandNode) {
-        System.exit(AppContext.SUCCESS);
-        return AppContext.SUCCESS;
+    public Result apply(CommandNode commandNode) {
+        System.exit(Result.SUCCESS);
+        return SUCCESS;
     }
 }

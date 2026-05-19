@@ -2,6 +2,8 @@ package app.executor.builtin;
 
 import app.AppContext;
 import app.ast.CommandNode;
+import app.executor.Result;
+import app.executor.ResultDefault;
 import app.lexer.token.Token;
 
 import java.util.Objects;
@@ -9,14 +11,13 @@ import java.util.function.Function;
 
 import static app.ast.command.Type.*;
 
-public record Type(AppContext appContext) implements Function<CommandNode, Integer> {
+public record Type(AppContext appContext) implements Function<CommandNode, Result> {
     @Override
-    public Integer apply(CommandNode commandNode) {
+    public Result apply(CommandNode commandNode) {
         final var parameter = commandNode.parameters().isEmpty() ? Token.builder().build() : commandNode.parameters().getFirst();
         final var message = type(parameter);
-        IO.println(message);
 
-        return AppContext.SUCCESS;
+        return new ResultDefault(message, Result.SUCCESS);
     }
 
     private String type(Token token) {

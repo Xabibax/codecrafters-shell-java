@@ -2,8 +2,8 @@ package app.ast.command;
 
 import app.ast.CommandNode;
 import app.lexer.token.Token;
-import app.lexer.token.Tokens;
-import app.lexer.token.word.Word;
+import app.lexer.token.Word;
+import app.lexer.token.word.WordDefault;
 import app.lexer.token.word.Words;
 
 public class CommandFactory {
@@ -14,13 +14,13 @@ public class CommandFactory {
         return instance;
     }
 
-    public CommandNode getCommand(Tokens tokens) {
-        Word command = (Word) tokens.getFirst();
-        Words parameters = tokens.stream().skip(1).map(Word.class::cast).collect(Words.toList()).trim();
+    public CommandNode getCommand(Words words) {
+        Word command = words.getFirst();
+        Words parameters = words.stream().skip(1).map(WordDefault.class::cast).collect(Words.toList()).trim();
         return new CommandNode(command, parameters);
     }
 
     public CommandNode getCommand(Token token) {
-        return new CommandNode((Word) token);
+        return new CommandNode((WordDefault) token);
     }
 }

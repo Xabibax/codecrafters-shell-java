@@ -1,14 +1,16 @@
 package app.lexer;
 
 import app.AppContext;
+import app.lexer.token.State;
 import app.lexer.token.Token;
 import app.lexer.token.Tokens;
+import app.lexer.token.Word;
 
 public record LexerDefault(AppContext appContext) implements Lexer {
 
     @Override
     public Tokens apply(String input) throws IncoherentFinalStateException {
-        final var context = new LexerContext(input);
+        final var context = new Context(input);
         final var handleCharacter = new HandleCharacter(context);
         if (context.isAtEnd()) {
             return context.tokens;
@@ -32,7 +34,7 @@ public record LexerDefault(AppContext appContext) implements Lexer {
         return context.tokens;
     }
 
-    private void handleTrim(LexerContext context) {
+    private void handleTrim(Context context) {
         context.tokens.trim();
     }
 
@@ -44,13 +46,13 @@ public record LexerDefault(AppContext appContext) implements Lexer {
         };
     }
 
-    Token merge(Token currToken, Token nextToken) {
+    Token merge(Word currToken, Word nextToken) {
         String value = currToken.value() + nextToken.value();
-        Token.State state = currToken.state();
+        State state = currToken.state();
         return Token.builder().state(state).value(value).build();
     }
 
-    void handleMergeableTokens(LexerContext context) {
+    void handleMergeableTokens(Context context) {
         final var tokens = context.tokens();
 
         for (int i = 0; i < tokens.size() - 1; i++) {
@@ -59,8 +61,9 @@ public record LexerDefault(AppContext appContext) implements Lexer {
 
             boolean sameMergeableToken = currToken.state().isMergeable() && currToken.state().equals(nextToken.state());
             boolean emptyToken = currToken.value().isEmpty() || nextToken.value().isEmpty();
-            if (sameMergeableToken || emptyToken) {
-                Token token = merge(currToken, nextToken);
+            boolean isMergeable = sameMergeableToken || emptyToken;
+            if (isMergeable && currToken instanceof Word currWord && nextToken instanceof Word nextWord) {
+                Token token = merge(currWord, nextWord);
                 tokens.set(i, token);
                 tokens.remove(i + 1);
                 i--;

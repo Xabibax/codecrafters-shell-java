@@ -2,15 +2,17 @@ package app.executor.builtin;
 
 import app.AppContext;
 import app.ast.CommandNode;
+import app.executor.Result;
+import app.executor.ResultDefault;
 
 import java.util.function.Function;
 
-public record Pwd(AppContext appContext) implements Function<CommandNode, Integer> {
+public record Pwd(AppContext appContext) implements Function<CommandNode, Result> {
 
     @Override
-    public Integer apply(CommandNode commandNode) {
-        IO.println(appContext.getCurrentDirectory());
+    public Result apply(CommandNode commandNode) {
+        final var currentDirectory = appContext.getCurrentDirectory().toString();
 
-        return AppContext.SUCCESS;
+        return ResultDefault.success(currentDirectory);
     }
 }
