@@ -1,9 +1,4 @@
-package app.lexer.token.word;
-
-import app.lexer.token.State;
-import app.lexer.token.Tokens;
-import app.lexer.token.TokensUtils;
-import app.lexer.token.Word;
+package app.lexer.token;
 
 import java.util.*;
 import java.util.function.BiConsumer;
@@ -36,10 +31,10 @@ public class Words extends ArrayList<Word> {
     }
 
     public Words trim() {
-        while (!isEmpty() && State.SPACE.equals(getFirst().state())) {
+        while (!isEmpty()) {
             removeFirst();
         }
-        while (!isEmpty() && State.SPACE.equals(getLast().state())) {
+        while (!isEmpty()) {
             removeLast();
         }
         return this;

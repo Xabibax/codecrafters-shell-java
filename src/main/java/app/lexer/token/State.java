@@ -4,7 +4,6 @@ public enum State {
     NORMAL(true),
     SINGLE_QUOTED(true),
     DOUBLE_QUOTED(true),
-    SPACE(true),
     ;
 
     final boolean isMergeable;

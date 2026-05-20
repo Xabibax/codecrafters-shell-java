@@ -51,16 +51,6 @@ public class Tokens extends ArrayList<Token> {
         return tokensJoiner();
     }
 
-    public Tokens trim() {
-        while (!isEmpty() && State.SPACE.equals(getFirst().state())) {
-            removeFirst();
-        }
-        while (!isEmpty() && State.SPACE.equals(getLast().state())) {
-            removeLast();
-        }
-        return this;
-    }
-
     public Tokens toTokens() {
         return this;
     }
@@ -78,7 +68,7 @@ public class Tokens extends ArrayList<Token> {
             switch (parameter.state()) {
                 case State.NORMAL -> {
                     switch (previousParameter.state()) {
-                        case NORMAL, SPACE -> res.add(parameter.value());
+                        case NORMAL -> res.add(parameter.value());
                         case SINGLE_QUOTED, DOUBLE_QUOTED -> res.set(res.size() - 1, res.getLast() + parameter.value());
                     }
                 }
@@ -86,14 +76,18 @@ public class Tokens extends ArrayList<Token> {
                     switch (previousParameter.state()) {
                         case NORMAL, SINGLE_QUOTED, DOUBLE_QUOTED ->
                                 res.set(res.size() - 1, res.getLast() + parameter.value());
-                        case SPACE -> res.add(parameter.value());
                     }
-                }
-                case State.SPACE -> {
                 }
             }
         }
         return String.join(" ", res);
+    }
+
+    public List<Token> subList(int i) {
+        if (i > size()) {
+            return new Tokens();
+        }
+        return subList(i, size());
     }
 
     private record CollectorImpl<T, R>(Supplier<Tokens> supplier,

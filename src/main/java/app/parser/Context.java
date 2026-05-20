@@ -3,18 +3,21 @@ package app.parser;
 import app.ast.AST;
 import app.ast.command.CommandFactory;
 import app.ast.operator.OperatorFactory;
-import app.lexer.token.word.Words;
+import app.lexer.token.Tokens;
+import app.lexer.token.Words;
 
 
 class Context {
-    private final Words words;
+    private final Tokens tokens;
+    private final Words currWords;
     private final CommandFactory commandFactory;
     private final OperatorFactory operatorFactory;
     private AST ast = null;
 
 
-    Context() {
-        words = new Words();
+    Context(Tokens tokens) {
+        this.tokens = tokens;
+        currWords = new Words();
         commandFactory = CommandFactory.getInstance();
         operatorFactory = OperatorFactory.getInstance();
     }
@@ -27,8 +30,8 @@ class Context {
         return operatorFactory;
     }
 
-    public Words words() {
-        return words;
+    public Words currWords() {
+        return currWords;
     }
 
     public AST ast() {
@@ -38,5 +41,9 @@ class Context {
     public Context ast(AST ast) {
         this.ast = ast;
         return this;
+    }
+
+    public Tokens tokens() {
+        return tokens;
     }
 }

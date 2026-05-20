@@ -26,7 +26,6 @@ public record LexerDefault(AppContext appContext) implements Lexer {
         }
 
         handleMergeableTokens(context);
-        handleTrim(context);
         if (!context.state.isTerminal()) {
             throw new IncoherentFinalStateException(context.state);
         }
@@ -34,14 +33,9 @@ public record LexerDefault(AppContext appContext) implements Lexer {
         return context.tokens;
     }
 
-    private void handleTrim(Context context) {
-        context.tokens.trim();
-    }
-
     boolean tokenToKeep(Token token) {
         return switch (token.state()) {
             case SINGLE_QUOTED, DOUBLE_QUOTED -> !token.value().isEmpty();
-            case SPACE -> false;
             case NORMAL -> true;
         };
     }

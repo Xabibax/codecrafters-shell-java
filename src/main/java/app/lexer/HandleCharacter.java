@@ -15,8 +15,6 @@ record HandleCharacter(Context context) {
     void handleSpace(char currentChar) {
         switch (currentChar) {
             case SPACE -> {
-                context.tokenBuilder.state(app.lexer.token.State.SPACE);
-                context.tokenBuilder.append(currentChar);
             }
             case SINGLE_QUOTE -> {
                 context.handleTokenEnd();
@@ -68,11 +66,7 @@ record HandleCharacter(Context context) {
         switch (currentChar) {
             case SINGLE_QUOTE -> context.state = SINGLE_QUOTES_OPEN;
             case DOUBLE_QUOTE -> context.state = DOUBLE_QUOTES_OPEN;
-            case SPACE -> {
-                context.tokenBuilder.state(app.lexer.token.State.SPACE);
-                context.tokenBuilder.append(currentChar);
-                context.state = State.SPACE;
-            }
+            case SPACE -> context.handleTokenEnd();
             case ESCAPE -> {
                 context.setEscape(true);
                 context.state = NORMAL;
@@ -104,11 +98,7 @@ record HandleCharacter(Context context) {
         switch (currentChar) {
             case SINGLE_QUOTE -> context.state = SINGLE_QUOTES_OPEN;
             case DOUBLE_QUOTE -> context.state = DOUBLE_QUOTES_OPEN;
-            case SPACE -> {
-                context.tokenBuilder.state(app.lexer.token.State.SPACE);
-                context.tokenBuilder.append(currentChar);
-                context.state = State.SPACE;
-            }
+            case SPACE -> context.handleTokenEnd();
             case ESCAPE -> {
                 context.setEscape(true);
                 context.state = NORMAL;
@@ -142,12 +132,8 @@ record HandleCharacter(Context context) {
             }
             case ESCAPE -> context.setEscape(true);
             case SPACE -> {
-                if (context.tokenBuilder.isNonEmpty()) {
-                    context.handleTokenEnd();
-                }
-                context.tokenBuilder.state(app.lexer.token.State.SPACE);
-                context.tokenBuilder.append(currentChar);
                 context.state = State.SPACE;
+                context.handleTokenEnd();
             }
             case REDIRECT_OUTPUT -> {
                 context.handleTokenEnd();
@@ -168,6 +154,38 @@ record HandleCharacter(Context context) {
             case DOUBLE_QUOTES_OPEN -> handleDoubleQuotesOpen(currentChar);
             case DOUBLE_QUOTES_CLOSE -> handleDoubleQuotesClose(currentChar);
             case SPACE -> handleSpace(currentChar);
+            case REDIRECT_OUTPUT -> handleRedirectOutput(currentChar);
+        }
+    }
+
+    private void handleRedirectOutput(char currentChar) {
+        if (context.isEscape()) {
+            context.tokenBuilder.append(currentChar);
+            context.setEscape(false);
+            return;
+        }
+        switch (currentChar) {
+            case SINGLE_QUOTE -> {
+                context.handleTokenEnd();
+                context.tokenBuilder.state(app.lexer.token.State.SINGLE_QUOTED);
+                context.state = SINGLE_QUOTES_OPEN;
+            }
+            case DOUBLE_QUOTE -> {
+                context.handleTokenEnd();
+                context.tokenBuilder.state(app.lexer.token.State.DOUBLE_QUOTED);
+                context.state = DOUBLE_QUOTES_OPEN;
+            }
+            case ESCAPE -> context.setEscape(true);
+            case SPACE -> {
+            }
+            case REDIRECT_OUTPUT -> {
+                context.handleTokenEnd();
+                context.tokenBuilder.value(">");
+                context.tokenBuilder.type(Type.OPERATOR);
+                context.tokenBuilder.state(app.lexer.token.State.NORMAL);
+                context.state = State.REDIRECT_OUTPUT;
+            }
+            default -> context.tokenBuilder.append(currentChar);
         }
     }
 }

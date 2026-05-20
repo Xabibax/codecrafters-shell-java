@@ -4,7 +4,7 @@ import app.AppContext;
 import app.ast.command.Type;
 import app.executor.Result;
 import app.lexer.token.Word;
-import app.lexer.token.word.Words;
+import app.lexer.token.Words;
 
 import static app.ast.command.Type.EXECUTABLE;
 import static app.ast.command.Type.NOT_FOUND;

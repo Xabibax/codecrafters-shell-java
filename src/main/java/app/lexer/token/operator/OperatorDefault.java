@@ -12,7 +12,10 @@ public record OperatorDefault(String value, State state) implements Operator {
 
     @Override
     public Type type() {
-        return Type.valueOf(value());
+        return switch (value) {
+            case ">" -> Type.OUTPUT;
+            default -> throw new IllegalArgumentException("No operator found for: %s".formatted(value));
+        };
     }
 
     @Override

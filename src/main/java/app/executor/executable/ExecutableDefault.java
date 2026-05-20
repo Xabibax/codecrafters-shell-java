@@ -6,7 +6,7 @@ import app.executor.Result;
 import app.executor.ResultDefault;
 import app.lexer.token.State;
 import app.lexer.token.Word;
-import app.lexer.token.word.Words;
+import app.lexer.token.Words;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -58,17 +58,14 @@ public record ExecutableDefault(AppContext appContext) implements Executable {
             switch (parameter.state()) {
                 case State.NORMAL -> {
                     switch (previousParameter.state()) {
-                        case NORMAL, SPACE -> res.add(parameter.value());
+                        case NORMAL -> res.add(parameter.value());
                         case SINGLE_QUOTED, DOUBLE_QUOTED -> appendToken(res, parameter);
                     }
                 }
                 case State.SINGLE_QUOTED, State.DOUBLE_QUOTED -> {
                     switch (previousParameter.state()) {
                         case NORMAL, SINGLE_QUOTED, DOUBLE_QUOTED -> appendToken(res, parameter);
-                        case SPACE -> res.add(parameter.value());
                     }
-                }
-                case State.SPACE -> {
                 }
             }
         }

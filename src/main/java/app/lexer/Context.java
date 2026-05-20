@@ -23,8 +23,20 @@ class Context {
         Token token = tokenBuilder.build();
         tokens.add(token);
         tokenBuilder.reset();
+        tokenBuilder.reset();
         switch (state) {
-            case NORMAL, SPACE -> state = State.NORMAL;
+            case NORMAL, SPACE, REDIRECT_OUTPUT -> state = State.NORMAL;
+            case SINGLE_QUOTES_OPEN, SINGLE_QUOTES_CLOSE, DOUBLE_QUOTES_OPEN, DOUBLE_QUOTES_CLOSE -> {
+            }
+        }
+    }
+
+    public void handleWordPartEnd() {
+        Token token = tokenBuilder.build();
+        tokens.add(token);
+        tokenBuilder.reset();
+        switch (state) {
+            case NORMAL, SPACE, REDIRECT_OUTPUT -> state = State.NORMAL;
             case SINGLE_QUOTES_OPEN, SINGLE_QUOTES_CLOSE, DOUBLE_QUOTES_OPEN, DOUBLE_QUOTES_CLOSE -> {
             }
         }

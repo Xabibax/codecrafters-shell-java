@@ -21,7 +21,7 @@ public class TokensUtils {
             switch (parameter.state()) {
                 case State.NORMAL -> {
                     switch (previousParameter.state()) {
-                        case NORMAL, SPACE -> res.add(parameter.value());
+                        case NORMAL -> res.add(parameter.value());
                         case SINGLE_QUOTED, DOUBLE_QUOTED -> res.set(res.size() - 1, res.getLast() + parameter.value());
                     }
                 }
@@ -29,10 +29,7 @@ public class TokensUtils {
                     switch (previousParameter.state()) {
                         case NORMAL, SINGLE_QUOTED, DOUBLE_QUOTED ->
                                 res.set(res.size() - 1, res.getLast() + parameter.value());
-                        case SPACE -> res.add(parameter.value());
                     }
-                }
-                case State.SPACE -> {
                 }
             }
         }

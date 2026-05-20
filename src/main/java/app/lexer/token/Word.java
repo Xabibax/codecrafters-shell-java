@@ -1,4 +1,5 @@
 package app.lexer.token;
 
-public non-sealed interface Word extends Token {
+public sealed interface Word extends Token permits WordDefault {
+
 }

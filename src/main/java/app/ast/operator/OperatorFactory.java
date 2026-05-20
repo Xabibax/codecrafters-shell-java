@@ -3,8 +3,8 @@ package app.ast.operator;
 import app.ast.CommandNode;
 import app.lexer.token.Token;
 import app.lexer.token.Tokens;
-import app.lexer.token.word.WordDefault;
-import app.lexer.token.word.Words;
+import app.lexer.token.WordDefault;
+import app.lexer.token.Words;
 
 public class OperatorFactory {
 
