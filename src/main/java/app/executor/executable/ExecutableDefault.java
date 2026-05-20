@@ -4,13 +4,12 @@ import app.AppContext;
 import app.ast.CommandNode;
 import app.executor.Result;
 import app.executor.ResultDefault;
-import app.lexer.token.State;
 import app.lexer.token.Word;
 import app.lexer.token.Words;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static app.executor.ResultDefault.IO_FAIL;
 
@@ -46,30 +45,7 @@ public record ExecutableDefault(AppContext appContext) implements Executable {
     }
 
     private List<String> merger(Words words) {
-        final List<String> res = new ArrayList<>();
-        int size = words.size();
-        for (int i = 0; i < size; i++) {
-            final var parameter = words.get(i);
-            if (i == 0) {
-                res.add(parameter.value());
-                continue;
-            }
-            final var previousParameter = words.get(i - 1);
-            switch (parameter.state()) {
-                case State.NORMAL -> {
-                    switch (previousParameter.state()) {
-                        case NORMAL -> res.add(parameter.value());
-                        case SINGLE_QUOTED, DOUBLE_QUOTED -> appendToken(res, parameter);
-                    }
-                }
-                case State.SINGLE_QUOTED, State.DOUBLE_QUOTED -> {
-                    switch (previousParameter.state()) {
-                        case NORMAL, SINGLE_QUOTED, DOUBLE_QUOTED -> appendToken(res, parameter);
-                    }
-                }
-            }
-        }
-        return res;
+        return words.stream().map(Word::toString).collect(Collectors.toList());
     }
 
     private Result handleExecutableException(Exception e) {

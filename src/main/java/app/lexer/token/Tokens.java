@@ -37,7 +37,7 @@ public class Tokens extends ArrayList<Token> {
                     r1.addAll(r2);
                     return r1;
                 },
-                Tokens::tokensJoiner,
+                Tokens::finisher,
                 Collections.emptySet());
     }
 
@@ -47,40 +47,33 @@ public class Tokens extends ArrayList<Token> {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Tokens tokens)) {
+            return false;
+        }
+        if (size() != tokens.size()) {
+            return false;
+        }
+
+        for (int i = 0; i < size(); i++) {
+            if (!get(i).equals(tokens.get(i))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
     public String toString() {
-        return tokensJoiner();
+        return finisher();
     }
 
     public Tokens toTokens() {
         return this;
     }
 
-    public String tokensJoiner() {
-        final List<String> res = new ArrayList<>();
-        int size = size();
-        for (int i = 0; i < size; i++) {
-            final var parameter = get(i);
-            if (i == 0) {
-                res.add(parameter.value());
-                continue;
-            }
-            final var previousParameter = get(i - 1);
-            switch (parameter.state()) {
-                case State.NORMAL -> {
-                    switch (previousParameter.state()) {
-                        case NORMAL -> res.add(parameter.value());
-                        case SINGLE_QUOTED, DOUBLE_QUOTED -> res.set(res.size() - 1, res.getLast() + parameter.value());
-                    }
-                }
-                case State.SINGLE_QUOTED, State.DOUBLE_QUOTED -> {
-                    switch (previousParameter.state()) {
-                        case NORMAL, SINGLE_QUOTED, DOUBLE_QUOTED ->
-                                res.set(res.size() - 1, res.getLast() + parameter.value());
-                    }
-                }
-            }
-        }
-        return String.join(" ", res);
+    private String finisher() {
+        return String.join(" ", stream().toString());
     }
 
     public List<Token> subList(int i) {

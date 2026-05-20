@@ -3,10 +3,14 @@ package app.lexer.token;
 import app.lexer.token.wordpart.WordPart;
 import app.lexer.token.wordpart.WordParts;
 
-public record WordDefault(WordParts wordParts, State state) implements Word {
+public record WordDefault(WordParts wordParts) implements Word {
+
+    public WordDefault(WordPart wordPart) {
+        this(WordParts.of(wordPart));
+    }
 
     public WordDefault(String value, State state) {
-        this(WordParts.of(WordPart.getWordPartFrom(value, state)), state);
+        this(WordParts.of(WordPart.getWordPartFrom(value, state)));
     }
 
     public WordDefault(StringBuilder value, State state) {
@@ -20,6 +24,6 @@ public record WordDefault(WordParts wordParts, State state) implements Word {
 
     @Override
     public String toString() {
-        return "(%s, state: %s)".formatted(wordParts(), state);
+        return "(%s)".formatted(wordParts());
     }
 }

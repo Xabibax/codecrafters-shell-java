@@ -8,8 +8,6 @@ public sealed interface Token permits Operator, Word {
 
     String value();
 
-    State state();
-
     @Override
     String toString();
 }
