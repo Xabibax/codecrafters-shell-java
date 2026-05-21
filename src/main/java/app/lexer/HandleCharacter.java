@@ -1,6 +1,6 @@
 package app.lexer;
 
-import app.lexer.token.Type;
+import app.models.token.Type;
 
 import static app.lexer.State.*;
 
@@ -17,29 +17,26 @@ record HandleCharacter(Context context) {
             case SPACE -> {
             }
             case SINGLE_QUOTE -> {
-                context.handleTokenEnd();
                 context.state = SINGLE_QUOTES_OPEN;
-                context.tokenBuilder.state(app.lexer.token.State.SINGLE_QUOTED);
+                context.tokenBuilder.setSingleQuoteState();
             }
             case DOUBLE_QUOTE -> {
-                context.handleTokenEnd();
                 context.state = DOUBLE_QUOTES_OPEN;
-                context.tokenBuilder.state(app.lexer.token.State.DOUBLE_QUOTED);
+                context.tokenBuilder.setDoubleQuoteState();
             }
             case ESCAPE -> {
-                context.handleTokenEnd();
                 context.state = NORMAL;
                 context.setEscape(true);
             }
             case REDIRECT_OUTPUT -> {
                 context.handleTokenEnd();
-                context.tokenBuilder.value(">");
-                context.tokenBuilder.type(Type.OPERATOR);
-                context.tokenBuilder.state(app.lexer.token.State.NORMAL);
+                context.tokenBuilder.value(">")
+                        .type(Type.OPERATOR)
+                        .setNormalState()
+                ;
                 context.state = State.REDIRECT_OUTPUT;
             }
             default -> {
-                context.handleTokenEnd();
                 context.state = NORMAL;
                 context.tokenBuilder.append(currentChar);
             }
@@ -53,10 +50,7 @@ record HandleCharacter(Context context) {
             return;
         }
         switch (currentChar) {
-            case DOUBLE_QUOTE -> {
-                context.state = DOUBLE_QUOTES_CLOSE;
-                context.handleTokenEnd();
-            }
+            case DOUBLE_QUOTE -> context.state = DOUBLE_QUOTES_CLOSE;
             case ESCAPE -> context.setEscape(true);
             default -> context.tokenBuilder.append(currentChar);
         }
@@ -64,52 +58,75 @@ record HandleCharacter(Context context) {
 
     void handleDoubleQuotesClose(char currentChar) {
         switch (currentChar) {
-            case SINGLE_QUOTE -> context.state = SINGLE_QUOTES_OPEN;
-            case DOUBLE_QUOTE -> context.state = DOUBLE_QUOTES_OPEN;
+            case SINGLE_QUOTE -> {
+                context.tokenBuilder.appendWordPart();
+                context.tokenBuilder.setSingleQuoteState();
+                context.state = SINGLE_QUOTES_OPEN;
+            }
+            case DOUBLE_QUOTE -> {
+                context.tokenBuilder.appendWordPart();
+                context.tokenBuilder.setDoubleQuoteState();
+                context.state = DOUBLE_QUOTES_OPEN;
+            }
             case SPACE -> context.handleTokenEnd();
             case ESCAPE -> {
                 context.setEscape(true);
                 context.state = NORMAL;
             }
             case REDIRECT_OUTPUT -> {
-                context.tokenBuilder.value(">");
-                context.tokenBuilder.type(Type.OPERATOR);
-                context.tokenBuilder.state(app.lexer.token.State.NORMAL);
+                context.tokenBuilder.value(">")
+                        .type(Type.OPERATOR)
+                        .setNormalState()
+                ;
                 context.state = State.REDIRECT_OUTPUT;
             }
             default -> {
-                context.handleTokenEnd();
-                context.tokenBuilder.append(currentChar);
+                context.tokenBuilder.appendWordPart();
+                context.tokenBuilder.setNormalState();
+                context.state = NORMAL;
             }
         }
     }
 
     void handleSingleQuotesOpen(char currentChar) {
-        switch (currentChar) {
-            case SINGLE_QUOTE -> {
-                context.state = SINGLE_QUOTES_CLOSE;
-                context.handleTokenEnd();
-            }
-            default -> context.tokenBuilder.append(currentChar);
+        if (currentChar == SINGLE_QUOTE) {
+            context.state = SINGLE_QUOTES_CLOSE;
+        } else {
+            context.tokenBuilder.append(currentChar);
         }
     }
 
     void handleSingleQuotesClose(char currentChar) {
         switch (currentChar) {
-            case SINGLE_QUOTE -> context.state = SINGLE_QUOTES_OPEN;
-            case DOUBLE_QUOTE -> context.state = DOUBLE_QUOTES_OPEN;
+            case SINGLE_QUOTE -> {
+                context.tokenBuilder.appendWordPart();
+                context.tokenBuilder.setSingleQuoteState();
+                context.state = SINGLE_QUOTES_OPEN;
+            }
+            case DOUBLE_QUOTE -> {
+                context.tokenBuilder.appendWordPart();
+                context.tokenBuilder.setDoubleQuoteState();
+                context.state = DOUBLE_QUOTES_OPEN;
+            }
             case SPACE -> context.handleTokenEnd();
             case ESCAPE -> {
                 context.setEscape(true);
                 context.state = NORMAL;
             }
             case REDIRECT_OUTPUT -> {
-                context.tokenBuilder.value(">");
-                context.tokenBuilder.type(Type.OPERATOR);
-                context.tokenBuilder.state(app.lexer.token.State.NORMAL);
+                context.handleTokenEnd();
+                context.tokenBuilder.value(">")
+                        .type(Type.OPERATOR)
+                        .setNormalState()
+                ;
                 context.state = State.REDIRECT_OUTPUT;
             }
-            default -> handleNormal(currentChar);
+            default -> {
+                context.tokenBuilder.appendWordPart();
+                context.tokenBuilder.setNormalState();
+                context.state = NORMAL;
+                context.tokenBuilder.append(currentChar);
+            }
         }
     }
 
@@ -121,25 +138,26 @@ record HandleCharacter(Context context) {
         }
         switch (currentChar) {
             case SINGLE_QUOTE -> {
-                context.handleTokenEnd();
-                context.tokenBuilder.state(app.lexer.token.State.SINGLE_QUOTED);
+                context.tokenBuilder.appendWordPart();
+                context.tokenBuilder.setSingleQuoteState();
                 context.state = SINGLE_QUOTES_OPEN;
             }
             case DOUBLE_QUOTE -> {
-                context.handleTokenEnd();
-                context.tokenBuilder.state(app.lexer.token.State.DOUBLE_QUOTED);
+                context.tokenBuilder.appendWordPart();
+                context.tokenBuilder.setDoubleQuoteState();
                 context.state = DOUBLE_QUOTES_OPEN;
             }
             case ESCAPE -> context.setEscape(true);
             case SPACE -> {
-                context.state = State.SPACE;
                 context.handleTokenEnd();
+                context.state = State.SPACE;
             }
             case REDIRECT_OUTPUT -> {
                 context.handleTokenEnd();
-                context.tokenBuilder.value(">");
-                context.tokenBuilder.type(Type.OPERATOR);
-                context.tokenBuilder.state(app.lexer.token.State.NORMAL);
+                context.tokenBuilder.value(">")
+                        .type(Type.OPERATOR)
+                        .setNormalState()
+                ;
                 context.state = State.REDIRECT_OUTPUT;
             }
             default -> context.tokenBuilder.append(currentChar);
@@ -167,12 +185,12 @@ record HandleCharacter(Context context) {
         switch (currentChar) {
             case SINGLE_QUOTE -> {
                 context.handleTokenEnd();
-                context.tokenBuilder.state(app.lexer.token.State.SINGLE_QUOTED);
+                context.tokenBuilder.setSingleQuoteState();
                 context.state = SINGLE_QUOTES_OPEN;
             }
             case DOUBLE_QUOTE -> {
                 context.handleTokenEnd();
-                context.tokenBuilder.state(app.lexer.token.State.DOUBLE_QUOTED);
+                context.tokenBuilder.setDoubleQuoteState();
                 context.state = DOUBLE_QUOTES_OPEN;
             }
             case ESCAPE -> context.setEscape(true);
@@ -180,9 +198,10 @@ record HandleCharacter(Context context) {
             }
             case REDIRECT_OUTPUT -> {
                 context.handleTokenEnd();
-                context.tokenBuilder.value(">");
-                context.tokenBuilder.type(Type.OPERATOR);
-                context.tokenBuilder.state(app.lexer.token.State.NORMAL);
+                context.tokenBuilder.value(">")
+                        .type(Type.OPERATOR)
+                        .setNormalState()
+                ;
                 context.state = State.REDIRECT_OUTPUT;
             }
             default -> context.tokenBuilder.append(currentChar);

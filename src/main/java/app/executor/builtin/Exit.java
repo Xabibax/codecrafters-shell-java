@@ -1,14 +1,13 @@
 package app.executor.builtin;
 
-import app.AppContext;
-import app.ast.CommandNode;
-import app.executor.Result;
+import app.models.ast.CommandNode;
+import app.models.result.Result;
 
 import java.util.function.Function;
 
-import static app.executor.ResultDefault.SUCCESS;
+import static app.models.result.ResultDefault.SUCCESS;
 
-public record Exit(AppContext appContext) implements Function<CommandNode, Result> {
+public record Exit() implements Function<CommandNode, Result> {
 
     @Override
     public Result apply(CommandNode commandNode) {

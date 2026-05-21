@@ -1,6 +1,6 @@
 package app.lexer;
 
-import app.lexer.token.Tokens;
+import app.models.token.Tokens;
 
 import java.util.function.Function;
 

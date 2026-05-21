@@ -1,9 +1,8 @@
 package app.lexer;
 
-import app.AppContext;
-import app.lexer.token.Tokens;
+import app.models.token.Tokens;
 
-public record LexerDefault(AppContext appContext) implements Lexer {
+public record LexerDefault() implements Lexer {
 
     @Override
     public Tokens apply(String input) throws IncoherentFinalStateException {

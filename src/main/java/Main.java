@@ -14,11 +14,20 @@ void main() {
 private void handleInput(AppContext appContext) {
     final var input = IO.readln();
 
-    final var tokens = appContext.factory.lexer(appContext).apply(input);
+    final var tokens = appContext.getFactory()
+            .lexer()
+            .apply(input)
+            ;
 
-    final var ast = appContext.factory.parser(appContext).apply(tokens);
+    final var ast = appContext.getFactory()
+            .parser()
+            .apply(tokens)
+            ;
 
-    final var executionResult = appContext.factory.executor(appContext).apply(ast);
+    final var executionResult = appContext.getFactory()
+            .executor(appContext)
+            .apply(ast)
+            ;
 
     IO.println(executionResult.getOutput());
 }

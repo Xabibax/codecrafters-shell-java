@@ -17,20 +17,16 @@ public class Factory {
     private Echo echo;
     private ExecutableDefault executable;
 
-
-    public Factory() {
-    }
-
-    public ParserDefault parser(AppContext appContext) {
+    public ParserDefault parser() {
         if (parser == null) {
-            parser = new ParserDefault(appContext);
+            parser = new ParserDefault();
         }
         return parser;
     }
 
-    public LexerDefault lexer(AppContext appContext) {
+    public LexerDefault lexer() {
         if (lexer == null) {
-            lexer = new LexerDefault(appContext);
+            lexer = new LexerDefault();
         }
         return lexer;
     }
@@ -42,9 +38,9 @@ public class Factory {
         return executor;
     }
 
-    public ExecutableDefault executable(AppContext appContext) {
+    public ExecutableDefault executable() {
         if (executable == null) {
-            executable = new ExecutableDefault(appContext);
+            executable = new ExecutableDefault();
         }
         return executable;
     }
@@ -63,9 +59,9 @@ public class Factory {
         return pwd;
     }
 
-    public Echo echo(AppContext appContext) {
+    public Echo echo() {
         if (echo == null) {
-            echo = new Echo(appContext);
+            echo = new Echo();
         }
         return echo;
     }
@@ -77,9 +73,9 @@ public class Factory {
         return cd;
     }
 
-    public Exit exit(AppContext appContext) {
+    public Exit exit() {
         if (exit == null) {
-            exit = new Exit(appContext);
+            exit = new Exit();
         }
         return exit;
     }

@@ -1,7 +1,7 @@
 package app.executor.executable;
 
-import app.ast.CommandNode;
-import app.executor.Result;
+import app.models.ast.CommandNode;
+import app.models.result.Result;
 
 import java.util.function.Function;
 

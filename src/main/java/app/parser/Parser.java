@@ -1,7 +1,7 @@
 package app.parser;
 
-import app.ast.AST;
-import app.lexer.token.Tokens;
+import app.models.ast.AST;
+import app.models.token.Tokens;
 
 import java.util.function.Function;
 

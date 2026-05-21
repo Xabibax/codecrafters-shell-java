@@ -1,33 +1,27 @@
 package app.executor.executable;
 
-import app.AppContext;
-import app.ast.CommandNode;
-import app.executor.Result;
-import app.executor.ResultDefault;
-import app.lexer.token.Word;
-import app.lexer.token.Words;
+import app.models.ast.CommandNode;
+import app.models.result.Result;
+import app.models.result.ResultDefault;
+import app.models.token.Word;
+import app.models.token.Words;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static app.executor.ResultDefault.IO_FAIL;
+import static app.models.result.ResultDefault.IO_FAIL;
 
 
-public record ExecutableDefault(AppContext appContext) implements Executable {
-
-    private static void appendToken(List<String> res, Word parameter) {
-        final var origin = res.getLast();
-        final var toAppend = parameter.value();
-        res.set(res.size() - 1, origin + toAppend);
-    }
+public record ExecutableDefault() implements Executable {
 
     @Override
     public Result apply(CommandNode commandNode) {
 
         final var commands = merger(commandNode.parameters());
 
-        commands.addFirst(commandNode.command().value());
+        commands.addFirst(commandNode.command()
+                .value());
 
         final var pb = new ProcessBuilder(commands);
         pb.redirectErrorStream(true);
@@ -35,7 +29,8 @@ public record ExecutableDefault(AppContext appContext) implements Executable {
         try {
             final var process = pb.start();
             final var exitValue = process.waitFor();
-            process.getInputStream().transferTo(System.out);
+            process.getInputStream()
+                    .transferTo(System.out);
 
             return new ResultDefault("", exitValue);
 
@@ -45,7 +40,9 @@ public record ExecutableDefault(AppContext appContext) implements Executable {
     }
 
     private List<String> merger(Words words) {
-        return words.stream().map(Word::toString).collect(Collectors.toList());
+        return words.stream()
+                .map(Word::toString)
+                .collect(Collectors.toList());
     }
 
     private Result handleExecutableException(Exception e) {

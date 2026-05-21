@@ -1,11 +1,15 @@
 package app.lexer;
 
-import app.lexer.token.Token;
-import app.lexer.token.TokenBuilder;
-import app.lexer.token.Tokens;
+import app.models.token.Token;
+import app.models.token.TokenBuilder;
+import app.models.token.Tokens;
+import lombok.Getter;
+import lombok.Setter;
 
 import static app.lexer.State.NORMAL;
 
+@Setter
+@Getter
 class Context {
     String input;
     int pos;
@@ -22,7 +26,6 @@ class Context {
     public void handleTokenEnd() {
         Token token = tokenBuilder.build();
         tokens.add(token);
-        tokenBuilder.reset();
         tokenBuilder.reset();
         switch (state) {
             case NORMAL, SPACE, REDIRECT_OUTPUT -> state = State.NORMAL;
@@ -42,49 +45,10 @@ class Context {
         }
     }
 
-    public Tokens getTokens() {
-        return tokens;
-    }
-
-    public void setTokens(Tokens tokens) {
-        this.tokens = tokens;
-    }
-
-    public TokenBuilder getTokenBuilder() {
-        return tokenBuilder;
-    }
-
-    public void setTokenBuilder(TokenBuilder tokenBuilder) {
-        this.tokenBuilder = tokenBuilder;
-    }
-
-    public State getState() {
-        return state;
-    }
-
-    public void setState(State state) {
-        this.state = state;
-    }
-
-    public Tokens tokens() {
-        return this.tokens;
-    }
-
-    public boolean isEscape() {
-        return escape;
-    }
-
-    public void setEscape(boolean escape) {
-        this.escape = escape;
-    }
-
     public boolean isAtEnd() {
         return input.length() == pos;
     }
 
-    /**
-     * return the currentChar and increment position
-     */
     public char nextChar() {
         return input.charAt(pos++);
     }

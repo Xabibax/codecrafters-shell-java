@@ -1,7 +1,8 @@
 package app.executor;
 
 import app.AppContext;
-import app.ast.AST;
+import app.models.ast.AST;
+import app.models.result.Result;
 
 public record ExecutorDefault(AppContext appContext) implements Executor {
     @Override

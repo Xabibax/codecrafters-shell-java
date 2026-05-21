@@ -1,7 +1,8 @@
 package app.lexer;
 
 enum State {
-    NORMAL, SINGLE_QUOTES_OPEN(false), DOUBLE_QUOTES_OPEN(false), SINGLE_QUOTES_CLOSE, DOUBLE_QUOTES_CLOSE, SPACE, REDIRECT_OUTPUT(false);
+    NORMAL, SINGLE_QUOTES_OPEN(false), DOUBLE_QUOTES_OPEN(false), SINGLE_QUOTES_CLOSE, DOUBLE_QUOTES_CLOSE, SPACE, REDIRECT_OUTPUT(
+            false);
 
     final boolean isTerminal;
 

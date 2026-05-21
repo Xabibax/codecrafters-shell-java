@@ -1,18 +1,17 @@
 package app.executor.builtin;
 
-import app.AppContext;
-import app.ast.CommandNode;
-import app.executor.Result;
-import app.executor.ResultDefault;
-import app.lexer.token.Tokens;
+import app.models.ast.CommandNode;
+import app.models.result.Result;
+import app.models.result.ResultDefault;
 
 import java.util.function.Function;
 
-public record Echo(AppContext appContext) implements Function<CommandNode, Result> {
+public record Echo() implements Function<CommandNode, Result> {
 
     @Override
     public Result apply(CommandNode commandNode) {
-        String message = commandNode.parameters().stream().collect(Tokens.joining());
+        String message = commandNode.parameters()
+                .toString();
 
         return ResultDefault.success(message);
     }

@@ -1,6 +1,7 @@
 package app.executor;
 
-import app.ast.AST;
+import app.models.ast.AST;
+import app.models.result.Result;
 
 import java.util.function.Function;
 
