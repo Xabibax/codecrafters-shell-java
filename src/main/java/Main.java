@@ -29,7 +29,15 @@ private void handleInput(AppContext appContext) {
             .apply(ast)
             ;
 
-    IO.println(executionResult.getOutput());
+    if (executionResult.getOutput()
+            .lastIndexOf("\n") == executionResult.getOutput()
+            .length() - 1 || executionResult.getOutput()
+            .lastIndexOf("\r") == executionResult.getOutput()
+            .length() - 1) {
+        IO.print(executionResult.getOutput());
+    } else {
+        IO.println(executionResult.getOutput());
+    }
 }
 
 private void printPrompt() {

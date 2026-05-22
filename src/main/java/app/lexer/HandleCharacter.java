@@ -68,7 +68,10 @@ record HandleCharacter(Context context) {
                 context.tokenBuilder.setDoubleQuoteState();
                 context.state = DOUBLE_QUOTES_OPEN;
             }
-            case SPACE -> context.handleTokenEnd();
+            case SPACE -> {
+                context.handleTokenEnd();
+                context.state = State.SPACE;
+            }
             case ESCAPE -> {
                 context.setEscape(true);
                 context.state = NORMAL;
@@ -84,6 +87,7 @@ record HandleCharacter(Context context) {
                 context.tokenBuilder.appendWordPart();
                 context.tokenBuilder.setNormalState();
                 context.state = NORMAL;
+                context.tokenBuilder.append(currentChar);
             }
         }
     }
@@ -108,7 +112,10 @@ record HandleCharacter(Context context) {
                 context.tokenBuilder.setDoubleQuoteState();
                 context.state = DOUBLE_QUOTES_OPEN;
             }
-            case SPACE -> context.handleTokenEnd();
+            case SPACE -> {
+                context.handleTokenEnd();
+                context.state = State.SPACE;
+            }
             case ESCAPE -> {
                 context.setEscape(true);
                 context.state = NORMAL;

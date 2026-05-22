@@ -16,8 +16,8 @@ public record Type(AppContext appContext) implements Function<CommandNode, Resul
     public Result apply(CommandNode commandNode) {
         final var parameter = commandNode.parameters()
                 .isEmpty() ? Token.builder()
-                             .build() : commandNode.parameters()
-                                        .getFirst();
+                .build() : commandNode.parameters()
+                .getFirst();
         final var message = type(parameter);
 
         return new ResultDefault(message, Result.SUCCESS);

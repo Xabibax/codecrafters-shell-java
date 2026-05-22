@@ -16,7 +16,12 @@ class LexerDefaultTest {
 
 
     static Stream<Arguments> providedParameters() {
-        return Stream.of(Arguments.of(test1()), Arguments.of(test2()), Arguments.of(test3()), Arguments.of(test4()));
+        return Stream.of(Arguments.of(test1()),
+                Arguments.of(test2()),
+                Arguments.of(test3()),
+                Arguments.of(test4()),
+                Arguments.of(test5()),
+                Arguments.of(test6()));
     }
 
     static ApplyTestParameters test1() {
@@ -48,6 +53,25 @@ class LexerDefaultTest {
         final var doubleQuoted3 = new DoubleQuoted(" 3");
         final var command = WordDefault.of(echo, singleQuoted1, literal2, doubleQuoted3);
         final var expected = Tokens.of(WordDefault.of("bash.exe"), WordDefault.of("-c"), command);
+
+        return new ApplyTestParameters(input, expected);
+    }
+
+    static ApplyTestParameters test5() {
+        final var input = "echo \"test  example\"  \"shell\"\"world\"";
+        final var expected = Tokens.of(WordDefault.of("echo"),
+                WordDefault.of(new DoubleQuoted("test  example")),
+                WordDefault.of(new DoubleQuoted("shell"), new DoubleQuoted("world")));
+
+        return new ApplyTestParameters(input, expected);
+    }
+
+    static ApplyTestParameters test6() {
+        final var input = "echo \"shell\"  \"world's\"  script\"\"example";
+        final var expected = Tokens.of(WordDefault.of("echo"),
+                WordDefault.of(new DoubleQuoted("shell")),
+                WordDefault.of(new DoubleQuoted("world's")),
+                WordDefault.of(new Literal("script"),new DoubleQuoted(""), new Literal("example")));
 
         return new ApplyTestParameters(input, expected);
     }

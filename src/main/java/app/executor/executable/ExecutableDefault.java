@@ -6,6 +6,7 @@ import app.models.result.ResultDefault;
 import app.models.token.Word;
 import app.models.token.Words;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,10 +30,12 @@ public record ExecutableDefault() implements Executable {
         try {
             final var process = pb.start();
             final var exitValue = process.waitFor();
+            final var output = new ByteArrayOutputStream();
             process.getInputStream()
-                    .transferTo(System.out);
+                    .transferTo(output);
 
-            return new ResultDefault("", exitValue);
+            String outputString = output.toString();
+            return new ResultDefault(outputString, exitValue);
 
         } catch (Exception e) {
             return handleExecutableException(e);
