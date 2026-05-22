@@ -1,6 +1,9 @@
 package app.lexer;
 
 import app.models.token.Tokens;
+import app.models.token.operator.Operator;
+
+import java.util.Optional;
 
 public record LexerDefault() implements Lexer {
 
@@ -13,6 +16,17 @@ public record LexerDefault() implements Lexer {
         }
 
         while (!context.isAtEnd()) {
+            if (!State.DOUBLE_QUOTES_OPEN.equals(context.state)
+                    && !State.SINGLE_QUOTES_OPEN.equals(context.state)
+                    && !context.isEscape()) {
+                Optional<Operator> operator = handleCharacter.handleOperator();
+                if(operator.isPresent()) {
+                    context.handleTokenEnd();
+                    context.tokens.add(operator.get());
+                    continue;
+                }
+            }
+
             handleCharacter.handleChar(context.nextChar());
         }
 

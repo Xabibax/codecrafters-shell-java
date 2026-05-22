@@ -10,7 +10,7 @@ public sealed interface Operator extends Token permits Output {
 
     static @NonNull Operator of(String value) {
         return switch (value) {
-            case ">" -> new Output();
+            case ">", "1>" -> new Output();
             default -> throw new IllegalArgumentException("No operator found for %s".formatted(value));
         };
     }

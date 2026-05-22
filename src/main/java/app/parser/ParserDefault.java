@@ -12,7 +12,7 @@ import java.nio.file.Path;
 
 public record ParserDefault() implements Parser {
 
-    private static void handleOperator(Operator operator, Context context) {
+    private void handleOperator(Operator operator, Context context) {
         switch (operator) {
             case Output _ -> {
                 int index = context.tokens()
@@ -20,7 +20,7 @@ public record ParserDefault() implements Parser {
                 final var subTokens = Tokens.of(context.tokens()
                         .subList(index + 1)
                         .toArray(Token[]::new));
-                if (subTokens.isEmpty() || !(context.tokens()
+                if (subTokens.isEmpty() || !(subTokens
                         .getFirst() instanceof Word filePath)) {
                     throw new IllegalArgumentException("Expected file after '>'");
                 }

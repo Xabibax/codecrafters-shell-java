@@ -1,6 +1,10 @@
 package app.lexer;
 
 import app.models.token.Type;
+import app.models.token.operator.Operator;
+import app.models.token.operator.Output;
+
+import java.util.Optional;
 
 import static app.lexer.State.*;
 
@@ -217,5 +221,28 @@ record HandleCharacter(Context context) {
                 context.tokenBuilder.append(currentChar);
             }
         }
+    }
+
+    public Optional<Operator> handleOperator() {
+        if(context.remainingChar() >= 2) {
+            String substring = context.input.substring(context().pos, context().pos + 2);
+            final Optional<Operator> operator = switch (substring) {
+                case "1>" -> Optional.of(new Output());
+                default -> Optional.empty();
+            };
+            if (operator.isPresent()) {
+                context.setPos(context.getPos() + 2);
+                return operator;
+            }
+        }
+        char charAt = context.input.charAt(context().pos);
+        final Optional<Operator> operator = switch (charAt) {
+            case '>' -> Optional.of(new Output());
+            default -> Optional.empty();
+        };
+        if (operator.isPresent()){
+            context.setPos(context.getPos() + 1);
+        }
+        return operator;
     }
 }

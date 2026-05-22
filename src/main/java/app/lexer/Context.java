@@ -51,7 +51,18 @@ class Context {
         return input.length() == pos;
     }
 
+    public int remainingChar() {
+        return input.length() - pos;
+    }
+
     public char nextChar() {
         return input.charAt(pos++);
+    }
+
+    public String toString() {
+        String left = pos == 0 ? "" : input.substring(0, pos);
+        String curr = String.valueOf(input.charAt(pos));
+        String right= pos == input.length() - 1 ? "" : input.substring(pos + 1);
+        return  "%s[%s]%s".formatted(left,curr,right);
     }
 }
