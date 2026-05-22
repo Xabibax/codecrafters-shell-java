@@ -1,4 +1,4 @@
-package app.models.token.wordpart;
+package app.models.token.word.wordpart;
 
 import org.jspecify.annotations.NonNull;
 

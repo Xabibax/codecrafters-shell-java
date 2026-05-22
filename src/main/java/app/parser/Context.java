@@ -4,7 +4,7 @@ import app.models.ast.AST;
 import app.models.ast.command.CommandFactory;
 import app.models.ast.operator.OperatorFactory;
 import app.models.token.Tokens;
-import app.models.token.Words;
+import app.models.token.word.Words;
 import lombok.Getter;
 import lombok.Setter;
 

@@ -17,7 +17,7 @@ public record LexerDefault() implements Lexer {
         }
 
         if (context.tokenBuilder.isNonEmpty()) {
-            final var lastToken = context.tokenBuilder.build();
+            final var lastToken = context.tokenBuilder. build();
             context.tokens.add(lastToken);
         }
 

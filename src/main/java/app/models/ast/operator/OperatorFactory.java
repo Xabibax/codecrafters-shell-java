@@ -3,8 +3,8 @@ package app.models.ast.operator;
 import app.models.ast.CommandNode;
 import app.models.token.Token;
 import app.models.token.Tokens;
-import app.models.token.WordDefault;
-import app.models.token.Words;
+import app.models.token.word.WordDefault;
+import app.models.token.word.Words;
 import lombok.Getter;
 
 public class OperatorFactory {

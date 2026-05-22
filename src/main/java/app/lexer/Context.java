@@ -24,8 +24,10 @@ class Context {
     }
 
     public void handleTokenEnd() {
-        Token token = tokenBuilder.build();
-        tokens.add(token);
+        if(tokenBuilder.isNonEmpty()){
+            Token token = tokenBuilder.build();
+            tokens.add(token);
+        }
         tokenBuilder.reset();
         switch (state) {
             case NORMAL, SPACE, REDIRECT_OUTPUT -> state = State.NORMAL;

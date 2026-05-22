@@ -1,9 +1,9 @@
 package app.models.ast.command;
 
 import app.models.ast.CommandNode;
-import app.models.token.Word;
-import app.models.token.WordDefault;
-import app.models.token.Words;
+import app.models.token.word.Word;
+import app.models.token.word.WordDefault;
+import app.models.token.word.Words;
 import lombok.Getter;
 
 public class CommandFactory {

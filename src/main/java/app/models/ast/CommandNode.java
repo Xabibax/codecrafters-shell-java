@@ -3,9 +3,8 @@ package app.models.ast;
 import app.AppContext;
 import app.models.ast.command.Type;
 import app.models.result.Result;
-import app.models.token.Word;
-import app.models.token.WordDefault;
-import app.models.token.Words;
+import app.models.token.word.Word;
+import app.models.token.word.Words;
 import org.jspecify.annotations.NonNull;
 
 import static app.models.ast.command.Type.EXECUTABLE;
@@ -14,7 +13,7 @@ import static app.models.ast.command.Type.NOT_FOUND;
 public record CommandNode(Word command, Words parameters) implements AST {
 
     public CommandNode(String literal, Words parameters) {
-        this(WordDefault.of(literal), parameters);
+        this(Word.of(literal), parameters);
     }
 
     public CommandNode(Word command) {

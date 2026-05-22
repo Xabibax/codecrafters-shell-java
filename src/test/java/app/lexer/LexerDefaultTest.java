@@ -1,10 +1,12 @@
 package app.lexer;
 
 import app.models.token.Tokens;
-import app.models.token.WordDefault;
-import app.models.token.wordpart.DoubleQuoted;
-import app.models.token.wordpart.Literal;
-import app.models.token.wordpart.SingleQuoted;
+import app.models.token.operator.Operator;
+import app.models.token.word.Word;
+import app.models.token.word.WordDefault;
+import app.models.token.word.wordpart.DoubleQuoted;
+import app.models.token.word.wordpart.Literal;
+import app.models.token.word.wordpart.SingleQuoted;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -21,7 +23,8 @@ class LexerDefaultTest {
                 Arguments.of(test3()),
                 Arguments.of(test4()),
                 Arguments.of(test5()),
-                Arguments.of(test6()));
+                Arguments.of(test6()),
+                Arguments.of(test7()));
     }
 
     static ApplyTestParameters test1() {
@@ -51,27 +54,38 @@ class LexerDefaultTest {
         final var singleQuoted1 = new SingleQuoted(" 1 ");
         final var literal2 = new Literal("2");
         final var doubleQuoted3 = new DoubleQuoted(" 3");
-        final var command = WordDefault.of(echo, singleQuoted1, literal2, doubleQuoted3);
-        final var expected = Tokens.of(WordDefault.of("bash.exe"), WordDefault.of("-c"), command);
+        final var command = Word.of(echo, singleQuoted1, literal2, doubleQuoted3);
+        final var expected = Tokens.of(Word.of("bash.exe"), Word.of("-c"), command);
 
         return new ApplyTestParameters(input, expected);
     }
 
     static ApplyTestParameters test5() {
         final var input = "echo \"test  example\"  \"shell\"\"world\"";
-        final var expected = Tokens.of(WordDefault.of("echo"),
-                WordDefault.of(new DoubleQuoted("test  example")),
-                WordDefault.of(new DoubleQuoted("shell"), new DoubleQuoted("world")));
+        final var expected = Tokens.of(Word.of("echo"),
+                Word.of(new DoubleQuoted("test  example")),
+                Word.of(new DoubleQuoted("shell"), new DoubleQuoted("world")));
 
         return new ApplyTestParameters(input, expected);
     }
 
     static ApplyTestParameters test6() {
         final var input = "echo \"shell\"  \"world's\"  script\"\"example";
-        final var expected = Tokens.of(WordDefault.of("echo"),
-                WordDefault.of(new DoubleQuoted("shell")),
-                WordDefault.of(new DoubleQuoted("world's")),
-                WordDefault.of(new Literal("script"),new DoubleQuoted(""), new Literal("example")));
+        final var expected = Tokens.of(Word.of("echo"),
+                Word.of(new DoubleQuoted("shell")),
+                Word.of(new DoubleQuoted("world's")),
+                Word.of(new Literal("script"),new DoubleQuoted(""), new Literal("example")));
+
+        return new ApplyTestParameters(input, expected);
+    }
+
+    static ApplyTestParameters test7() {
+        final var input = "ls -1 /tmp/rat > /tmp/dog/ant.md";
+        final var expected = Tokens.of(Word.of("ls"),
+                Word.of(new Literal("-1")),
+                Word.of(new Literal("/tmp/rat")),
+                Operator.of(">"),
+                Word.of(new Literal("/tmp/dog/ant.md")));
 
         return new ApplyTestParameters(input, expected);
     }

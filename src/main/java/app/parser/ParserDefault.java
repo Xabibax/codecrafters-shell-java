@@ -2,19 +2,19 @@ package app.parser;
 
 import app.models.ast.AST;
 import app.models.ast.RedirectOutputNode;
-import app.models.token.Operator;
+import app.models.token.operator.Operator;
 import app.models.token.Token;
 import app.models.token.Tokens;
-import app.models.token.Word;
+import app.models.token.operator.Output;
+import app.models.token.word.Word;
 
 import java.nio.file.Path;
 
 public record ParserDefault() implements Parser {
 
     private static void handleOperator(Operator operator, Context context) {
-        operator.type();
-        switch (operator.type()) {
-            case OUTPUT -> {
+        switch (operator) {
+            case Output _ -> {
                 int index = context.tokens()
                         .indexOf(operator);
                 final var subTokens = Tokens.of(context.tokens()

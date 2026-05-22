@@ -211,7 +211,11 @@ record HandleCharacter(Context context) {
                 ;
                 context.state = State.REDIRECT_OUTPUT;
             }
-            default -> context.tokenBuilder.append(currentChar);
+            default -> {
+                context.handleTokenEnd();
+                context.tokenBuilder.setNormalState();
+                context.tokenBuilder.append(currentChar);
+            }
         }
     }
 }

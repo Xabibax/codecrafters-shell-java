@@ -1,7 +1,7 @@
-package app.models.token;
+package app.models.token.word;
 
-import app.models.token.wordpart.WordPart;
-import app.models.token.wordpart.WordParts;
+import app.models.token.word.wordpart.WordPart;
+import app.models.token.word.wordpart.WordParts;
 import org.jspecify.annotations.NonNull;
 
 public record WordDefault(WordParts wordParts) implements Word {
@@ -14,14 +14,6 @@ public record WordDefault(WordParts wordParts) implements Word {
 
     public WordDefault(WordPart wordPart) {
         this(WordParts.of(wordPart));
-    }
-
-    public static Word of(WordPart... wordParts) {
-        return new WordDefault(WordParts.of(wordParts));
-    }
-
-    public static Word of(String... literals) {
-        return new WordDefault(WordParts.of(literals));
     }
 
     @Override

@@ -1,5 +1,7 @@
-package app.models.token;
+package app.models.token.word;
 
+import app.models.token.Tokens;
+import app.models.token.TokensUtils;
 import org.jspecify.annotations.NonNull;
 
 import java.util.*;
@@ -32,7 +34,7 @@ public class Words extends ArrayList<Word> {
 
     public static Words of(String... literals) {
         final var list = Arrays.stream(literals)
-                .map(WordDefault::of)
+                .map(Word::of)
                 .toList()
                 ;
         return new Words(list);

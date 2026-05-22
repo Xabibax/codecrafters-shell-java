@@ -3,8 +3,8 @@ package app.executor.executable;
 import app.models.ast.CommandNode;
 import app.models.result.Result;
 import app.models.result.ResultDefault;
-import app.models.token.Word;
-import app.models.token.Words;
+import app.models.token.word.Word;
+import app.models.token.word.Words;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

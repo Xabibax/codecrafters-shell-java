@@ -1,8 +1,10 @@
 package app.models.token;
 
 
-import app.models.token.operator.OperatorDefault;
-import app.models.token.wordpart.*;
+import app.models.token.operator.Operator;
+import app.models.token.word.Word;
+import app.models.token.word.WordDefault;
+import app.models.token.word.wordpart.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -84,8 +86,8 @@ public class TokenBuilder {
     public boolean isEmpty() {
         return switch (state) {
             case NORMAL -> value.toString()
-                    .isBlank();
-            case SINGLE_QUOTED, DOUBLE_QUOTED -> value.isEmpty();
+                    .isEmpty();
+            case SINGLE_QUOTED, DOUBLE_QUOTED -> false;
         };
     }
 
@@ -119,7 +121,7 @@ public class TokenBuilder {
     }
 
     private @NonNull Operator getOperator() {
-        return new OperatorDefault(value);
+        return Operator.of(value);
     }
 
 }

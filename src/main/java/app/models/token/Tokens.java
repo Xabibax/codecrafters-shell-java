@@ -1,6 +1,7 @@
 package app.models.token;
 
-import app.models.token.wordpart.WordPart;
+import app.models.token.word.Word;
+import app.models.token.word.wordpart.WordPart;
 
 import java.util.*;
 import java.util.function.BiConsumer;
@@ -27,7 +28,7 @@ public class Tokens extends ArrayList<Token> {
 
     public static Tokens of(WordPart... wordParts) {
         final var words = Arrays.stream(wordParts)
-                .map(WordDefault::of)
+                .map(Word::of)
                 .toList()
                 ;
         return new Tokens(words);
@@ -35,7 +36,7 @@ public class Tokens extends ArrayList<Token> {
 
     public static Tokens of(String... literals) {
         final var words = Arrays.stream(literals)
-                .map(WordDefault::of)
+                .map(Word::of)
                 .toList()
                 ;
         return new Tokens(words);

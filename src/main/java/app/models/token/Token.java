@@ -1,7 +1,7 @@
 package app.models.token;
 
 
-public sealed interface Token permits Operator, Word {
+public interface Token {
     static TokenBuilder builder() {
         return new TokenBuilder();
     }
