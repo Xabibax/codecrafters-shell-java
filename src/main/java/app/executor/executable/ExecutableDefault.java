@@ -31,11 +31,13 @@ public record ExecutableDefault() implements Executable {
             final var process = pb.start();
             final var exitValue = process.waitFor();
             final var output = new ByteArrayOutputStream();
+            final var errorOutput = new ByteArrayOutputStream();
             process.getInputStream()
                     .transferTo(output);
+            process.getErrorStream()
+                    .transferTo(errorOutput);
 
-            String outputString = output.toString();
-            return new ResultDefault(outputString, exitValue);
+            return new ResultDefault(output, errorOutput, exitValue);
 
         } catch (Exception e) {
             return handleExecutableException(e);

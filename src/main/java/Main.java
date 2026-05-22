@@ -1,4 +1,5 @@
 import app.AppContext;
+import app.models.result.Result;
 
 public static final String SHELL_PROMPT = "$ ";
 
@@ -29,14 +30,21 @@ private void handleInput(AppContext appContext) {
             .apply(ast)
             ;
 
-    if (executionResult.getOutput()
-            .lastIndexOf("\n") == executionResult.getOutput()
-            .length() - 1 || executionResult.getOutput()
-            .lastIndexOf("\r") == executionResult.getOutput()
+    switch (executionResult.getCode()) {
+        case Result.SUCCESS, Result.WARNING -> handleOutput(executionResult.getOutput());
+        case Result.FAIL, Result.IO_FAIL -> handleOutput(executionResult.getErrorOutput());
+    }
+}
+
+private static void handleOutput(String output) {
+    if (output
+            .lastIndexOf("\n") == output
+            .length() - 1 || output
+            .lastIndexOf("\r") == output
             .length() - 1) {
-        IO.print(executionResult.getOutput());
+        IO.print(output);
     } else {
-        IO.println(executionResult.getOutput());
+        IO.println(output);
     }
 }
 

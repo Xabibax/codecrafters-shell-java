@@ -8,5 +8,7 @@ public interface Result {
     int IO_FAIL = 3;
 
     String getOutput();
+    String getErrorOutput();
+    int getCode();
 
 }
