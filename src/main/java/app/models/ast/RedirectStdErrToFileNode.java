@@ -10,7 +10,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-public record RedirectOutputNode(AST ast, Path target) implements AST {
+public record RedirectStdErrToFileNode(AST ast, Path target) implements AST {
     @Override
     public Result apply(AppContext appContext) {
         final var result = ast.apply(appContext);

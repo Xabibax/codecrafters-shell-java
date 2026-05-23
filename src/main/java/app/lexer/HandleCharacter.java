@@ -2,7 +2,7 @@ package app.lexer;
 
 import app.models.token.Type;
 import app.models.token.operator.Operator;
-import app.models.token.operator.Output;
+import app.models.token.operator.RedirectStdOut;
 
 import java.util.Optional;
 
@@ -227,7 +227,7 @@ record HandleCharacter(Context context) {
         if(context.remainingChar() >= 2) {
             String substring = context.input.substring(context().pos, context().pos + 2);
             final Optional<Operator> operator = switch (substring) {
-                case "1>" -> Optional.of(new Output());
+                case "1>" -> Optional.of(new RedirectStdOut(substring));
                 default -> Optional.empty();
             };
             if (operator.isPresent()) {
@@ -237,7 +237,7 @@ record HandleCharacter(Context context) {
         }
         char charAt = context.input.charAt(context().pos);
         final Optional<Operator> operator = switch (charAt) {
-            case '>' -> Optional.of(new Output());
+            case '>' -> Optional.of(new RedirectStdOut(String.valueOf(charAt)));
             default -> Optional.empty();
         };
         if (operator.isPresent()){

@@ -1,11 +1,14 @@
 package app.parser;
 
 import app.models.ast.AST;
-import app.models.ast.RedirectOutputNode;
+import app.models.ast.RedirectStdErrToFileNode;
+import app.models.ast.RedirectStdOutToFileNode;
 import app.models.token.operator.Operator;
 import app.models.token.Token;
 import app.models.token.Tokens;
-import app.models.token.operator.Output;
+import app.models.token.operator.Redirect;
+import app.models.token.operator.RedirectStdErr;
+import app.models.token.operator.RedirectStdOut;
 import app.models.token.word.Word;
 
 import java.nio.file.Path;
@@ -14,23 +17,29 @@ public record ParserDefault() implements Parser {
 
     private void handleOperator(Operator operator, Context context) {
         switch (operator) {
-            case Output _ -> {
-                int index = context.tokens()
-                        .indexOf(operator);
-                final var subTokens = Tokens.of(context.tokens()
-                        .subList(index + 1)
-                        .toArray(Token[]::new));
-                if (subTokens.isEmpty() || !(subTokens
-                        .getFirst() instanceof Word filePath)) {
-                    throw new IllegalArgumentException("Expected file after '>'");
-                }
-
-                Path target = Path.of(filePath.value());
-                context.setAst(new RedirectOutputNode(context.getAst(), target));
-                context.tokens()
-                        .remove(index + 1);
-            }
+            case Redirect redirect -> getRedirectAst(redirect, context);
         }
+    }
+
+    private void getRedirectAst(Redirect redirect, Context context) {
+        int index = context.tokens()
+                .indexOf(redirect);
+        final var subTokens = Tokens.of(context.tokens()
+                .subList(index + 1)
+                .toArray(Token[]::new));
+        if (subTokens.isEmpty() || !(subTokens
+                .getFirst() instanceof Word filePath)) {
+            throw new IllegalArgumentException("Expected file after '>'");
+        }
+
+        Path target = Path.of(filePath.value());
+        final var redirectAst = switch (redirect) {
+            case RedirectStdOut _ -> new RedirectStdOutToFileNode(context.getAst(), target);
+            case RedirectStdErr _ -> new RedirectStdErrToFileNode(context.getAst(), target);
+        };
+        context.setAst(redirectAst);
+        context.tokens()
+                .remove(index + 1);
     }
 
     @Override
