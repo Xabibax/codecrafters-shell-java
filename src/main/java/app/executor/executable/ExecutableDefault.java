@@ -32,11 +32,11 @@ public record ExecutableDefault() implements Executable {
 
         try {
             final var process = pb.start();
+            final var exitValue = process.waitFor();
             process.getInputStream()
                     .transferTo(appContext.getStdout());
             process.getErrorStream()
                     .transferTo(appContext.getStderr());
-            final var exitValue = process.waitFor();
 
             return new ResultDefault("", exitValue);
 

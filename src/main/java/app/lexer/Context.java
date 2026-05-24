@@ -30,7 +30,7 @@ class Context {
         }
         tokenBuilder.reset();
         switch (state) {
-            case NORMAL, SPACE, REDIRECT_OUTPUT -> state = State.NORMAL;
+            case NORMAL, SPACE -> state = State.NORMAL;
             case SINGLE_QUOTES_OPEN, SINGLE_QUOTES_CLOSE, DOUBLE_QUOTES_OPEN, DOUBLE_QUOTES_CLOSE -> {
             }
         }
@@ -41,7 +41,7 @@ class Context {
         tokens.add(token);
         tokenBuilder.reset();
         switch (state) {
-            case NORMAL, SPACE, REDIRECT_OUTPUT -> state = State.NORMAL;
+            case NORMAL, SPACE -> state = State.NORMAL;
             case SINGLE_QUOTES_OPEN, SINGLE_QUOTES_CLOSE, DOUBLE_QUOTES_OPEN, DOUBLE_QUOTES_CLOSE -> {
             }
         }

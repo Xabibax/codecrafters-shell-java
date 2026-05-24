@@ -1,7 +1,7 @@
 package app.lexer;
 
-import app.models.token.Type;
 import app.models.token.operator.Operator;
+import app.models.token.operator.RedirectErr;
 import app.models.token.operator.RedirectOut;
 
 import java.util.Optional;
@@ -14,7 +14,6 @@ record HandleCharacter(Context context) {
     public static final char DOUBLE_QUOTE = '"';
     public static final char ESCAPE = '\\';
     public static final char SPACE = ' ';
-    public static final char REDIRECT_OUTPUT = '>';
 
     void handleSpace(char currentChar) {
         switch (currentChar) {
@@ -31,14 +30,6 @@ record HandleCharacter(Context context) {
             case ESCAPE -> {
                 context.state = NORMAL;
                 context.setEscape(true);
-            }
-            case REDIRECT_OUTPUT -> {
-                context.handleTokenEnd();
-                context.tokenBuilder.value(">")
-                        .type(Type.REDIRECT_OUT)
-                        .setNormalState()
-                ;
-                context.state = State.REDIRECT_OUTPUT;
             }
             default -> {
                 context.state = NORMAL;
@@ -80,13 +71,6 @@ record HandleCharacter(Context context) {
                 context.setEscape(true);
                 context.state = NORMAL;
             }
-            case REDIRECT_OUTPUT -> {
-                context.tokenBuilder.value(">")
-                        .type(Type.REDIRECT_OUT)
-                        .setNormalState()
-                ;
-                context.state = State.REDIRECT_OUTPUT;
-            }
             default -> {
                 context.tokenBuilder.appendWordPart();
                 context.tokenBuilder.setNormalState();
@@ -124,14 +108,6 @@ record HandleCharacter(Context context) {
                 context.setEscape(true);
                 context.state = NORMAL;
             }
-            case REDIRECT_OUTPUT -> {
-                context.handleTokenEnd();
-                context.tokenBuilder.value(">")
-                        .type(Type.REDIRECT_OUT)
-                        .setNormalState()
-                ;
-                context.state = State.REDIRECT_OUTPUT;
-            }
             default -> {
                 context.tokenBuilder.appendWordPart();
                 context.tokenBuilder.setNormalState();
@@ -163,14 +139,6 @@ record HandleCharacter(Context context) {
                 context.handleTokenEnd();
                 context.state = State.SPACE;
             }
-            case REDIRECT_OUTPUT -> {
-                context.handleTokenEnd();
-                context.tokenBuilder.value(">")
-                        .type(Type.REDIRECT_OUT)
-                        .setNormalState()
-                ;
-                context.state = State.REDIRECT_OUTPUT;
-            }
             default -> context.tokenBuilder.append(currentChar);
         }
     }
@@ -183,43 +151,6 @@ record HandleCharacter(Context context) {
             case DOUBLE_QUOTES_OPEN -> handleDoubleQuotesOpen(currentChar);
             case DOUBLE_QUOTES_CLOSE -> handleDoubleQuotesClose(currentChar);
             case SPACE -> handleSpace(currentChar);
-            case REDIRECT_OUTPUT -> handleRedirectOutput(currentChar);
-        }
-    }
-
-    private void handleRedirectOutput(char currentChar) {
-        if (context.isEscape()) {
-            context.tokenBuilder.append(currentChar);
-            context.setEscape(false);
-            return;
-        }
-        switch (currentChar) {
-            case SINGLE_QUOTE -> {
-                context.handleTokenEnd();
-                context.tokenBuilder.setSingleQuoteState();
-                context.state = SINGLE_QUOTES_OPEN;
-            }
-            case DOUBLE_QUOTE -> {
-                context.handleTokenEnd();
-                context.tokenBuilder.setDoubleQuoteState();
-                context.state = DOUBLE_QUOTES_OPEN;
-            }
-            case ESCAPE -> context.setEscape(true);
-            case SPACE -> {
-            }
-            case REDIRECT_OUTPUT -> {
-                context.handleTokenEnd();
-                context.tokenBuilder.value(">")
-                        .type(Type.REDIRECT_OUT)
-                        .setNormalState()
-                ;
-                context.state = State.REDIRECT_OUTPUT;
-            }
-            default -> {
-                context.handleTokenEnd();
-                context.tokenBuilder.setNormalState();
-                context.tokenBuilder.append(currentChar);
-            }
         }
     }
 
@@ -228,6 +159,7 @@ record HandleCharacter(Context context) {
             String substring = context.input.substring(context().pos, context().pos + 2);
             final Optional<Operator> operator = switch (substring) {
                 case "1>" -> Optional.of(new RedirectOut(substring));
+                case "2>" -> Optional.of(new RedirectErr(substring));
                 default -> Optional.empty();
             };
             if (operator.isPresent()) {
