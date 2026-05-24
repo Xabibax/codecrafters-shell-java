@@ -48,7 +48,7 @@ class Context {
     }
 
     public boolean isAtEnd() {
-        return input.length() == pos;
+        return input.length() <= pos;
     }
 
     public int remainingChar() {

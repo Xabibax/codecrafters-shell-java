@@ -1,8 +1,8 @@
 package app;
 
 import app.executor.ExecutorDefault;
-import app.executor.builtin.*;
 import app.executor.executable.ExecutableDefault;
+import app.executor.executable.builtin.*;
 import app.lexer.LexerDefault;
 import app.parser.ParserDefault;
 
@@ -15,7 +15,7 @@ public class Factory {
     private Exit exit;
     private Pwd pwd;
     private Echo echo;
-    private ExecutableDefault executable;
+    private ExecutableDefault executableDefault;
 
     public ParserDefault parser() {
         if (parser == null) {
@@ -31,30 +31,30 @@ public class Factory {
         return lexer;
     }
 
-    public ExecutorDefault executor(AppContext appContext) {
+    public ExecutorDefault executor() {
         if (executor == null) {
-            executor = new ExecutorDefault(appContext);
+            executor = new ExecutorDefault();
         }
         return executor;
     }
 
     public ExecutableDefault executable() {
-        if (executable == null) {
-            executable = new ExecutableDefault();
+        if (executableDefault == null) {
+            executableDefault = new ExecutableDefault();
         }
-        return executable;
+        return executableDefault;
     }
 
-    public Type type(AppContext appContext) {
+    public Type type() {
         if (type == null) {
-            type = new Type(appContext);
+            type = new Type();
         }
         return type;
     }
 
-    public Pwd pwd(AppContext appContext) {
+    public Pwd pwd() {
         if (pwd == null) {
-            pwd = new Pwd(appContext);
+            pwd = new Pwd();
         }
         return pwd;
     }
@@ -66,9 +66,9 @@ public class Factory {
         return echo;
     }
 
-    public Cd cd(AppContext appContext) {
+    public Cd cd() {
         if (cd == null) {
-            cd = new Cd(appContext);
+            cd = new Cd();
         }
         return cd;
     }

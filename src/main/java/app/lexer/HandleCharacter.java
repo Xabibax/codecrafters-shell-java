@@ -2,7 +2,7 @@ package app.lexer;
 
 import app.models.token.Type;
 import app.models.token.operator.Operator;
-import app.models.token.operator.RedirectStdOut;
+import app.models.token.operator.RedirectOut;
 
 import java.util.Optional;
 
@@ -35,7 +35,7 @@ record HandleCharacter(Context context) {
             case REDIRECT_OUTPUT -> {
                 context.handleTokenEnd();
                 context.tokenBuilder.value(">")
-                        .type(Type.OPERATOR)
+                        .type(Type.REDIRECT_OUT)
                         .setNormalState()
                 ;
                 context.state = State.REDIRECT_OUTPUT;
@@ -82,7 +82,7 @@ record HandleCharacter(Context context) {
             }
             case REDIRECT_OUTPUT -> {
                 context.tokenBuilder.value(">")
-                        .type(Type.OPERATOR)
+                        .type(Type.REDIRECT_OUT)
                         .setNormalState()
                 ;
                 context.state = State.REDIRECT_OUTPUT;
@@ -127,7 +127,7 @@ record HandleCharacter(Context context) {
             case REDIRECT_OUTPUT -> {
                 context.handleTokenEnd();
                 context.tokenBuilder.value(">")
-                        .type(Type.OPERATOR)
+                        .type(Type.REDIRECT_OUT)
                         .setNormalState()
                 ;
                 context.state = State.REDIRECT_OUTPUT;
@@ -166,7 +166,7 @@ record HandleCharacter(Context context) {
             case REDIRECT_OUTPUT -> {
                 context.handleTokenEnd();
                 context.tokenBuilder.value(">")
-                        .type(Type.OPERATOR)
+                        .type(Type.REDIRECT_OUT)
                         .setNormalState()
                 ;
                 context.state = State.REDIRECT_OUTPUT;
@@ -210,7 +210,7 @@ record HandleCharacter(Context context) {
             case REDIRECT_OUTPUT -> {
                 context.handleTokenEnd();
                 context.tokenBuilder.value(">")
-                        .type(Type.OPERATOR)
+                        .type(Type.REDIRECT_OUT)
                         .setNormalState()
                 ;
                 context.state = State.REDIRECT_OUTPUT;
@@ -227,7 +227,7 @@ record HandleCharacter(Context context) {
         if(context.remainingChar() >= 2) {
             String substring = context.input.substring(context().pos, context().pos + 2);
             final Optional<Operator> operator = switch (substring) {
-                case "1>" -> Optional.of(new RedirectStdOut(substring));
+                case "1>" -> Optional.of(new RedirectOut(substring));
                 default -> Optional.empty();
             };
             if (operator.isPresent()) {
@@ -237,7 +237,7 @@ record HandleCharacter(Context context) {
         }
         char charAt = context.input.charAt(context().pos);
         final Optional<Operator> operator = switch (charAt) {
-            case '>' -> Optional.of(new RedirectStdOut(String.valueOf(charAt)));
+            case '>' -> Optional.of(new RedirectOut(String.valueOf(charAt)));
             default -> Optional.empty();
         };
         if (operator.isPresent()){

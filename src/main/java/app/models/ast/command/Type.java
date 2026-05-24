@@ -46,28 +46,28 @@ public enum Type implements BiFunction<AppContext, CommandNode, Result> {
             case NOT_FOUND -> handleCommandNotFound(commandNode);
             case EXIT -> appContext.getFactory()
                     .exit()
-                    .apply(commandNode)
+                    .apply(commandNode, appContext)
             ;
             case BLANK -> handleBlank();
             case ECHO -> appContext.getFactory()
                     .echo()
-                    .apply(commandNode)
+                    .apply(commandNode, appContext)
             ;
             case TYPE -> appContext.getFactory()
-                    .type(appContext)
-                    .apply(commandNode)
+                    .type()
+                    .apply(commandNode, appContext)
             ;
             case EXECUTABLE -> appContext.getFactory()
                     .executable()
-                    .apply(commandNode)
+                    .apply(commandNode, appContext)
             ;
             case PWD -> appContext.getFactory()
-                    .pwd(appContext)
-                    .apply(commandNode)
+                    .pwd()
+                    .apply(commandNode, appContext)
             ;
             case CD -> appContext.getFactory()
-                    .cd(appContext)
-                    .apply(commandNode)
+                    .cd()
+                    .apply(commandNode, appContext)
             ;
         };
     }

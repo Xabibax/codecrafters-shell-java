@@ -10,7 +10,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.jspecify.annotations.NonNull;
 
-import static app.models.token.Type.OPERATOR;
+import static app.models.token.Type.WORD;
+
 
 @Getter
 @Setter
@@ -19,7 +20,7 @@ public class TokenBuilder {
     private WordParts wordParts = new WordParts();
     @Setter(AccessLevel.PRIVATE)
     private State state = State.NORMAL;
-    private Type type = Type.WORD;
+    private Type type = WORD;
 
     TokenBuilder() {
     }
@@ -76,7 +77,7 @@ public class TokenBuilder {
         value("");
         wordParts().clear();
         setState(State.NORMAL);
-        type(Type.WORD);
+        type(WORD);
     }
 
     public boolean isNonEmpty() {
@@ -92,18 +93,18 @@ public class TokenBuilder {
     }
 
     public void appendWordPart() {
-        if (OPERATOR.equals(type)) {
+        if (!WORD.equals(type)) {
             throw new IllegalStateException("Cannot appendWordPart with an operator");
         }
         wordParts().add(getWordPart());
         value("").setState(State.NORMAL);
-        type(Type.WORD);
+        type(WORD);
     }
 
     public Token build() {
         return switch (type) {
             case WORD -> getWord();
-            case OPERATOR -> getOperator();
+            case REDIRECT_OUT, REDIRECT_ERR -> getOperator();
         };
     }
 

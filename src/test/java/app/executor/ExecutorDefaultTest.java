@@ -87,9 +87,9 @@ class ExecutorDefaultTest {
     @ParameterizedTest
     @MethodSource("providedParameters")
     void apply(ApplyTestParameters applyTestParameters) {
-        final var executorDefault = new ExecutorDefault(appContext);
+        final var executorDefault = new ExecutorDefault();
 
-        final var actual = executorDefault.apply(applyTestParameters.input());
+        final var actual = executorDefault.apply(applyTestParameters.input(),appContext);
 
         Assertions.assertEquals(applyTestParameters.expected, actual);
     }
@@ -97,7 +97,7 @@ class ExecutorDefaultTest {
     @ParameterizedTest
     @MethodSource("providedExecutableParameters")
     void applyExecutable(ApplyTestParameters applyTestParameters) throws IOException {
-        final var executorDefault = new ExecutorDefault(appContext);
+        final var executorDefault = new ExecutorDefault();
 
         doReturn(executable)
                 .when(factory)
@@ -113,10 +113,10 @@ class ExecutorDefaultTest {
         ;
         doReturn(applyTestParameters.expected)
                 .when(executable)
-                .apply((CommandNode) applyTestParameters.input)
+                .apply((CommandNode) applyTestParameters.input, appContext)
         ;
 
-        final var actual = executorDefault.apply(applyTestParameters.input());
+        final var actual = executorDefault.apply(applyTestParameters.input(),appContext);
 
         Assertions.assertEquals(applyTestParameters.expected, actual);
     }

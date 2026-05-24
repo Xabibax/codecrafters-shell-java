@@ -5,6 +5,6 @@ import app.models.result.Result;
 
 import java.util.function.Function;
 
-public sealed interface AST extends Function<AppContext, Result> permits CommandNode, RedirectStdErrToFileNode, RedirectStdOutToFileNode {
+public sealed interface AST extends Function<AppContext, Result> permits CommandNode, RedirectNode {
     Result apply(AppContext appContext);
 }

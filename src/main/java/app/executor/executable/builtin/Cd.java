@@ -1,30 +1,30 @@
-package app.executor.builtin;
+package app.executor.executable.builtin;
 
 import app.AppContext;
+import app.executor.executable.Executable;
 import app.models.ast.CommandNode;
 import app.models.result.Result;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.function.Function;
 
 import static app.models.result.ResultDefault.FAIL;
 import static app.models.result.ResultDefault.SUCCESS;
 
-public record Cd(AppContext appContext) implements Function<CommandNode, Result> {
+public record Cd() implements Executable {
     @Override
-    public Result apply(CommandNode commandNode) {
+    public Result apply(CommandNode commandNode, AppContext appContext) {
 
         if (commandNode.parameters()
                 .isEmpty()) {
-            appContext.setCurrendDirectory(appContext.getHomeDirectory());
+            appContext.setCurrentDirectory(appContext.getHomeDirectory());
         }
         String path = commandNode.parameters()
                 .getFirst()
                 .value()
                 ;
         if ("~".equalsIgnoreCase(path)) {
-            appContext.setCurrendDirectory(appContext.getHomeDirectory());
+            appContext.setCurrentDirectory(appContext.getHomeDirectory());
         }
 
         var currentDirectory = appContext.getCurrentDirectory();
@@ -38,7 +38,7 @@ public record Cd(AppContext appContext) implements Function<CommandNode, Result>
 
         try {
             Path canonicalDirectory = handleChangeCurrentDirectory(currentDirectory, newDirectory);
-            appContext.setCurrendDirectory(canonicalDirectory);
+            appContext.setCurrentDirectory(canonicalDirectory);
         } catch (IOException e) {
             return FAIL;
         }

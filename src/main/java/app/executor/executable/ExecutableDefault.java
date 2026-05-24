@@ -1,12 +1,12 @@
 package app.executor.executable;
 
+import app.AppContext;
 import app.models.ast.CommandNode;
 import app.models.result.Result;
 import app.models.result.ResultDefault;
 import app.models.token.word.Word;
 import app.models.token.word.Words;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,12 +17,15 @@ import static app.models.result.ResultDefault.IO_FAIL;
 public record ExecutableDefault() implements Executable {
 
     @Override
-    public Result apply(CommandNode commandNode) {
+    public Result apply(CommandNode commandNode, AppContext appContext) {
 
         final var commands = merger(commandNode.parameters());
+        final var commandPath = appContext.handleExecutableSearch(commandNode.command())
+                .orElseThrow()
+                .getAbsolutePath()
+                ;
 
-        commands.addFirst(commandNode.command()
-                .value());
+        commands.addFirst(commandPath);
 
         final var pb = new ProcessBuilder(commands);
         pb.redirectErrorStream(true);
@@ -30,14 +33,12 @@ public record ExecutableDefault() implements Executable {
         try {
             final var process = pb.start();
             final var exitValue = process.waitFor();
-            final var output = new ByteArrayOutputStream();
-            final var errorOutput = new ByteArrayOutputStream();
             process.getInputStream()
-                    .transferTo(output);
+                    .transferTo(appContext.getStdout());
             process.getErrorStream()
-                    .transferTo(errorOutput);
+                    .transferTo(appContext.getStderr());
 
-            return new ResultDefault(output, errorOutput, exitValue);
+            return new ResultDefault("", exitValue);
 
         } catch (Exception e) {
             return handleExecutableException(e);

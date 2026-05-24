@@ -1,5 +1,7 @@
-package app.executor.builtin;
+package app.executor.executable.builtin;
 
+import app.AppContext;
+import app.executor.executable.Executable;
 import app.models.ast.CommandNode;
 import app.models.result.Result;
 
@@ -7,10 +9,10 @@ import java.util.function.Function;
 
 import static app.models.result.ResultDefault.SUCCESS;
 
-public record Exit() implements Function<CommandNode, Result> {
+public record Exit() implements Executable {
 
     @Override
-    public Result apply(CommandNode commandNode) {
+    public Result apply(CommandNode commandNode, AppContext appContext) {
         System.exit(Result.SUCCESS);
         return SUCCESS;
     }

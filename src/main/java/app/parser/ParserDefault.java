@@ -1,52 +1,32 @@
 package app.parser;
 
 import app.models.ast.AST;
-import app.models.ast.RedirectStdErrToFileNode;
-import app.models.ast.RedirectStdOutToFileNode;
+import app.models.ast.Redirect;
+import app.models.ast.RedirectNode;
 import app.models.token.operator.Operator;
 import app.models.token.Token;
 import app.models.token.Tokens;
-import app.models.token.operator.Redirect;
-import app.models.token.operator.RedirectStdErr;
-import app.models.token.operator.RedirectStdOut;
+import app.models.token.operator.RedirectErr;
+import app.models.token.operator.RedirectOut;
 import app.models.token.word.Word;
+import app.models.token.word.Words;
 
 import java.nio.file.Path;
+import java.util.List;
 
 public record ParserDefault() implements Parser {
 
-    private void handleOperator(Operator operator, Context context) {
-        switch (operator) {
-            case Redirect redirect -> getRedirectAst(redirect, context);
-        }
-    }
 
     private void getRedirectAst(Redirect redirect, Context context) {
-        int index = context.tokens()
-                .indexOf(redirect);
-        final var subTokens = Tokens.of(context.tokens()
-                .subList(index + 1)
-                .toArray(Token[]::new));
-        if (subTokens.isEmpty() || !(subTokens
-                .getFirst() instanceof Word filePath)) {
-            throw new IllegalArgumentException("Expected file after '>'");
-        }
-
-        Path target = Path.of(filePath.value());
-        final var redirectAst = switch (redirect) {
-            case RedirectStdOut _ -> new RedirectStdOutToFileNode(context.getAst(), target);
-            case RedirectStdErr _ -> new RedirectStdErrToFileNode(context.getAst(), target);
-        };
-        context.setAst(redirectAst);
-        context.tokens()
-                .remove(index + 1);
     }
 
     @Override
     public AST apply(Tokens tokens) {
         Context context = new Context(tokens);
+        final var curWords = new Words();
 
-        for (Token token : tokens) {
+        while (!context.isAtEnd()) {
+            final var token = context.nextToken();
             handleToken(token, context);
         }
 
@@ -61,14 +41,41 @@ public record ParserDefault() implements Parser {
 
     private void handleToken(Token token, Context context) {
         switch (token) {
-            case Word word -> context.currWords()
-                    .add(word);
-            case Operator operator -> {
-                handleCommandEnd(context);
-                handleOperator(operator, context);
-            }
+            case Word word -> handleWord(context, word);
+            case Operator operator -> handleOperator(context, operator);
             default -> throw new IllegalStateException("Unexpected value: " + token);
         }
+    }
+
+    private void handleOperator(Context context, Operator operator) {
+        handleCommandEnd(context);
+        switch (operator) {
+            case RedirectErr redirectErr -> {
+                Token token = context.nextToken();
+                if(! (token instanceof Word)) {
+                    throw new IllegalArgumentException("A redirection excpect a word");
+                }
+                Redirect redirect = new Redirect(Redirect.RedirectSource.ERR,
+                        Redirect.RedirectType.WRITE,
+                        Path.of(token.value()));
+                new RedirectNode(context.getAst(), List.of(redirect));
+            }
+            case RedirectOut redirectOut -> {
+                Token token = context.nextToken();
+                if(! (token instanceof Word)) {
+                    throw new IllegalArgumentException("A redirection excpect a word");
+                }
+                Redirect redirect = new Redirect(Redirect.RedirectSource.OUT,
+                        Redirect.RedirectType.WRITE,
+                        Path.of(token.value()));
+                new RedirectNode(context.getAst(), List.of(redirect));
+            }
+        }
+    }
+
+    private static boolean handleWord(Context context, Word word) {
+        return context.currWords()
+                .add(word);
     }
 
     private void handleCommandEnd(Context context) {

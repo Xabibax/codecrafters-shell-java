@@ -24,7 +24,8 @@ class LexerDefaultTest {
                 Arguments.of(test4()),
                 Arguments.of(test5()),
                 Arguments.of(test6()),
-                Arguments.of(test7()));
+                Arguments.of(test7()),
+                Arguments.of(test8()));
     }
 
     static ApplyTestParameters test1() {
@@ -82,10 +83,20 @@ class LexerDefaultTest {
     static ApplyTestParameters test7() {
         final var input = "ls -1 /tmp/rat > /tmp/dog/ant.md";
         final var expected = Tokens.of(Word.of("ls"),
-                Word.of(new Literal("-1")),
-                Word.of(new Literal("/tmp/rat")),
+                Word.of("-1"),
+                Word.of("/tmp/rat"),
                 Operator.of(">"),
-                Word.of(new Literal("/tmp/dog/ant.md")));
+                Word.of("/tmp/dog/ant.md"));
+
+        return new ApplyTestParameters(input, expected);
+    }
+    static ApplyTestParameters test8() {
+        final var input = "cat /tmp/fox/banana nonexistent 1> /tmp/pig/rat.md";
+        final var expected = Tokens.of(Word.of("cat"),
+                Word.of("/tmp/fox/banana"),
+                Word.of("nonexistent"),
+                Operator.of("1>"),
+                Word.of("/tmp/pig/rat.md"));
 
         return new ApplyTestParameters(input, expected);
     }

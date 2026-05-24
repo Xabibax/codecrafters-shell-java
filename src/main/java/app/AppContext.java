@@ -2,8 +2,11 @@ package app;
 
 import app.models.token.Token;
 import lombok.Getter;
+import lombok.Setter;
 
-import java.io.File;
+import java.io.*;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -11,13 +14,16 @@ import java.util.List;
 import java.util.Optional;
 
 @Getter
+@Setter
 public class AppContext {
-    public static final String PATH = "PATH";
-    public static final String HOME = "HOME";
-    public static final String USER_DIR = "user.dir";
-    public static final String USER_HOME = "user.home";
     private final Factory factory;
     private Path currentDirectory;
+
+    private InputStream stdin;
+    private OutputStream stdout;
+    private OutputStream stderr;
+
+    private BufferedReader br;
 
     public AppContext() {
         this(new Factory());
@@ -25,21 +31,20 @@ public class AppContext {
 
     public AppContext(Factory factory) {
         this.factory = factory;
-        this.currentDirectory = Paths.get(System.getProperty(USER_DIR));
+        this.currentDirectory = Paths.get(System.getProperty("user.dir"));
+        this.stdin = System.in;
+        this.stdout = System.out;
+        this.stderr = System.err;
     }
 
     public Path getHomeDirectory() {
-        String home = System.getenv(HOME);
-        String userHome = System.getProperty(USER_HOME);
+        String home = System.getenv("HOME");
+        String userHome = System.getProperty("user.home");
         return Paths.get(home != null ? home : userHome);
     }
 
-    public void setCurrendDirectory(Path newDirectory) {
-        this.currentDirectory = newDirectory;
-    }
-
     private List<String> getPaths() {
-        return Arrays.stream(System.getenv(PATH)
+        return Arrays.stream(System.getenv("PATH")
                         .split(":"))
                 .toList();
     }
@@ -53,5 +58,22 @@ public class AppContext {
                 .filter(File::isFile)
                 .filter(File::canExecute)
                 .findAny();
+    }
+
+    private synchronized BufferedReader reader() {
+        if (br == null) {
+            String enc = System.getProperty("stdin.encoding", "");
+            Charset cs = Charset.forName(enc, StandardCharsets.UTF_8);
+            br = new BufferedReader(new InputStreamReader(getStdin(), cs));
+        }
+        return br;
+    }
+
+    public String readln() {
+        try {
+            return reader().readLine();
+        } catch (IOException ioe) {
+            throw new IOError(ioe);
+        }
     }
 }
