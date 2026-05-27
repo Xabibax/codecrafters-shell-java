@@ -45,6 +45,10 @@ public record ExecutorDefault() implements Executor {
         return switch (redirect.target()) {
             case Redirect.RedirectToFile redirectToFile -> {
                 try {
+                    boolean newFile = redirectToFile.target()
+                            .toFile()
+                            .createNewFile()
+                            ;
                     yield Files.newOutputStream(redirectToFile.target(), redirect.getOpenOptions());
                 } catch (IOException e) {
                     throw new GetOutputStreamIOException(e);
