@@ -5,15 +5,15 @@ import app.models.ast.command.Type;
 import app.models.result.Result;
 import app.models.token.word.Word;
 import app.models.token.word.Words;
-import app.models.token.word.wordpart.Literal;
 import org.jspecify.annotations.NonNull;
-
-import java.util.Arrays;
 
 import static app.models.ast.command.Type.EXECUTABLE;
 import static app.models.ast.command.Type.NOT_FOUND;
 
-public record CommandNode(Word command, Words parameters) implements AST {
+public record CommandNode(
+        Word command,
+        Words parameters
+) implements AST {
 
     public CommandNode(String command, Words parameters) {
         this(Word.of(command), parameters);
@@ -23,7 +23,7 @@ public record CommandNode(Word command, Words parameters) implements AST {
         this(command, Words.of());
     }
 
-    public CommandNode(String command, String...parameters) {
+    public CommandNode(String command, String... parameters) {
         this(command, Words.of(parameters));
     }
 

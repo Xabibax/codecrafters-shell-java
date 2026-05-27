@@ -1,13 +1,13 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Main" type="Application" factoryName="Application" nameIsGenerated="true">
-    <envs>
-      <env name="PATH" value="/test:/Program Files/Git/bin:/Program Files/Git/usr/bin" />
-    </envs>
-    <option name="UNNAMED_CLASS_CONFIGURATION" value="true" />
-    <option name="MAIN_CLASS_NAME" value="Main" />
-    <module name="codecrafters-shell-java" />
-    <method v="2">
-      <option name="Make" enabled="true" />
-    </method>
-  </configuration>
+    <configuration default="false" name="Main" type="Application" factoryName="Application" nameIsGenerated="true">
+        <envs>
+            <env name="PATH" value="/test:/Program Files/Git/bin:/Program Files/Git/usr/bin"/>
+        </envs>
+        <option name="UNNAMED_CLASS_CONFIGURATION" value="true"/>
+        <option name="MAIN_CLASS_NAME" value="Main"/>
+        <module name="codecrafters-shell-java"/>
+        <method v="2">
+            <option name="Make" enabled="true"/>
+        </method>
+    </configuration>
 </component>

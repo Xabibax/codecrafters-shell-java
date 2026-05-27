@@ -5,8 +5,6 @@ import app.executor.executable.Executable;
 import app.models.ast.CommandNode;
 import app.models.result.Result;
 
-import java.util.function.Function;
-
 import static app.models.result.ResultDefault.SUCCESS;
 
 public record Exit() implements Executable {

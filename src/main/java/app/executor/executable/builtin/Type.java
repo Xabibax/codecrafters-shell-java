@@ -7,9 +7,7 @@ import app.models.result.Result;
 import app.models.result.ResultDefault;
 import app.models.token.Token;
 
-import java.io.IOException;
 import java.util.Objects;
-import java.util.function.Function;
 
 import static app.models.ast.command.Type.*;
 
@@ -22,7 +20,8 @@ public record Type() implements Executable {
                 .getFirst();
         final var message = type(parameter, appContext);
 
-        appContext.getStdout().println(message);
+        appContext.getStdout()
+                .println(message);
 
         return ResultDefault.SUCCESS;
     }

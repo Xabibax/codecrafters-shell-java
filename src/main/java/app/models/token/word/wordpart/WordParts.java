@@ -75,9 +75,13 @@ public class WordParts extends ArrayList<WordPart> {
                 .collect(Collectors.joining());
     }
 
-    private record CollectorImpl<R>(Supplier<WordParts> supplier, BiConsumer<WordParts, WordPart> accumulator,
-                                    BinaryOperator<WordParts> combiner, Function<WordParts, R> finisher,
-                                    Set<Characteristics> characteristics) implements Collector<WordPart, WordParts, R> {
+    private record CollectorImpl<R>(
+            Supplier<WordParts> supplier,
+            BiConsumer<WordParts, WordPart> accumulator,
+            BinaryOperator<WordParts> combiner,
+            Function<WordParts, R> finisher,
+            Set<Characteristics> characteristics
+    ) implements Collector<WordPart, WordParts, R> {
 
         @SuppressWarnings("unchecked")
         CollectorImpl(Supplier<WordParts> supplier, BiConsumer<WordParts, WordPart> accumulator, BinaryOperator<WordParts> combiner, Set<Characteristics> characteristics) {

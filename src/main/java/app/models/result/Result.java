@@ -8,6 +8,7 @@ public interface Result {
     int IO_FAIL = 3;
 
     String message();
+
     int code();
 
 }

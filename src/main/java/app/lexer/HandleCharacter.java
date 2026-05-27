@@ -155,7 +155,7 @@ record HandleCharacter(Context context) {
     }
 
     public Optional<Operator> handleOperator() {
-        if(context.remainingChar() >= 3) {
+        if (context.remainingChar() >= 3) {
             String substring = context.input.substring(context().pos, context().pos + 3);
             final Optional<Operator> operator = switch (substring) {
                 case "1>>" -> Optional.of(new RedirectOut(substring));
@@ -167,7 +167,7 @@ record HandleCharacter(Context context) {
                 return operator;
             }
         }
-        if(context.remainingChar() >= 2) {
+        if (context.remainingChar() >= 2) {
             String substring = context.input.substring(context().pos, context().pos + 2);
             final Optional<Operator> operator = switch (substring) {
                 case ">>", "1>" -> Optional.of(new RedirectOut(substring));
@@ -184,7 +184,7 @@ record HandleCharacter(Context context) {
             case '>' -> Optional.of(new RedirectOut(String.valueOf(charAt)));
             default -> Optional.empty();
         };
-        if (operator.isPresent()){
+        if (operator.isPresent()) {
             context.setPos(context.getPos() + 1);
         }
         return operator;

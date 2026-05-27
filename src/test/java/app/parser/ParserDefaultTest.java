@@ -32,7 +32,7 @@ class ParserDefaultTest {
     }
 
     static ApplyTestParameters test1() {
-        final var input =  Tokens.of("invalid_apple_command");
+        final var input = Tokens.of("invalid_apple_command");
         final var expected = new CommandNode("invalid_apple_command");
 
         return new ApplyTestParameters(input, expected);
@@ -47,7 +47,7 @@ class ParserDefaultTest {
 
     static ApplyTestParameters test3() {
         final var input = Tokens.of("bash.exe", "-c", "echo 1 2 3");
-        final var expected = new CommandNode("bash.exe","-c", "echo 1 2 3");
+        final var expected = new CommandNode("bash.exe", "-c", "echo 1 2 3");
 
         return new ApplyTestParameters(input, expected);
     }
@@ -58,7 +58,7 @@ class ParserDefaultTest {
                 Word.of("nonexistent"),
                 Operator.of("1>"),
                 Word.of("/tmp/pig/rat.md"));
-        CommandNode commandNode = new CommandNode("cat","/tmp/fox/banana", "nonexistent");
+        CommandNode commandNode = new CommandNode("cat", "/tmp/fox/banana", "nonexistent");
         Redirect.RedirectToFile redirectToFile = new Redirect.RedirectToFile(Path.of("/tmp/pig/rat.md"));
         Redirect redirect = new Redirect(Redirect.RedirectSource.OUT, Redirect.RedirectType.WRITE, redirectToFile);
         final var expected = new RedirectNode(commandNode, List.of(redirect));
@@ -72,7 +72,7 @@ class ParserDefaultTest {
                 Word.of("nonexistent"),
                 Operator.of("2>>"),
                 Word.of("/tmp/pig/rat.md"));
-        CommandNode commandNode = new CommandNode("cat","/tmp/fox/banana", "nonexistent");
+        CommandNode commandNode = new CommandNode("cat", "/tmp/fox/banana", "nonexistent");
         Redirect.RedirectToFile redirectToFile = new Redirect.RedirectToFile(Path.of("/tmp/pig/rat.md"));
         Redirect redirect = new Redirect(Redirect.RedirectSource.ERR, Redirect.RedirectType.APPEND, redirectToFile);
         final var expected = new RedirectNode(commandNode, List.of(redirect));
@@ -86,7 +86,7 @@ class ParserDefaultTest {
                 Word.of("nonexistent"),
                 Operator.of(">>"),
                 Word.of("/tmp/pig/rat.md"));
-        CommandNode commandNode = new CommandNode("cat","/tmp/fox/banana", "nonexistent");
+        CommandNode commandNode = new CommandNode("cat", "/tmp/fox/banana", "nonexistent");
         Redirect.RedirectToFile redirectToFile = new Redirect.RedirectToFile(Path.of("/tmp/pig/rat.md"));
         Redirect redirect = new Redirect(Redirect.RedirectSource.OUT, Redirect.RedirectType.APPEND, redirectToFile);
         final var expected = new RedirectNode(commandNode, List.of(redirect));
@@ -100,7 +100,7 @@ class ParserDefaultTest {
                 Word.of("nonexistent"),
                 Operator.of("1>>"),
                 Word.of("/tmp/pig/rat.md"));
-        CommandNode commandNode = new CommandNode("cat","/tmp/fox/banana", "nonexistent");
+        CommandNode commandNode = new CommandNode("cat", "/tmp/fox/banana", "nonexistent");
         Redirect.RedirectToFile redirectToFile = new Redirect.RedirectToFile(Path.of("/tmp/pig/rat.md"));
         Redirect redirect = new Redirect(Redirect.RedirectSource.OUT, Redirect.RedirectType.APPEND, redirectToFile);
         final var expected = new RedirectNode(commandNode, List.of(redirect));
@@ -119,6 +119,9 @@ class ParserDefaultTest {
         Assertions.assertEquals(applyTestParameters.expected, actual);
     }
 
-    record ApplyTestParameters(Tokens input, AST expected) {
+    record ApplyTestParameters(
+            Tokens input,
+            AST expected
+    ) {
     }
 }

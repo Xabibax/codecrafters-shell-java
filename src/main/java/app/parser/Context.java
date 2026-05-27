@@ -38,7 +38,6 @@ class Context {
     }
 
 
-
     public boolean isAtEnd() {
         return tokens.size() <= cursor;
     }

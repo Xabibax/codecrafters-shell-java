@@ -73,11 +73,12 @@ public class Words extends ArrayList<Word> {
         return stream().collect(Tokens.toList());
     }
 
-    private record CollectorImpl<R>(Supplier<Words> supplier,
-                                    BiConsumer<Words, Word> accumulator,
-                                    BinaryOperator<Words> combiner,
-                                    Function<Words, R> finisher,
-                                    Set<Characteristics> characteristics
+    private record CollectorImpl<R>(
+            Supplier<Words> supplier,
+            BiConsumer<Words, Word> accumulator,
+            BinaryOperator<Words> combiner,
+            Function<Words, R> finisher,
+            Set<Characteristics> characteristics
     ) implements Collector<Word, Words, R> {
 
         @SuppressWarnings("unchecked")

@@ -5,17 +5,13 @@ import app.Factory;
 import app.executor.executable.ExecutableDefault;
 import app.models.ast.AST;
 import app.models.ast.CommandNode;
-import app.models.ast.Redirect;
-import app.models.ast.RedirectNode;
 import app.models.result.Result;
 import app.models.result.ResultDefault;
 import app.models.token.word.WordDefault;
 import app.models.token.word.Words;
 import app.models.token.word.wordpart.Literal;
-import org.jspecify.annotations.NonNull;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -24,8 +20,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -90,7 +84,7 @@ class ExecutorDefaultTest {
     void apply(ApplyTestParameters applyTestParameters) {
         final var executorDefault = new ExecutorDefault();
 
-        final var actual = executorDefault.apply(applyTestParameters.input(),appContext);
+        final var actual = executorDefault.apply(applyTestParameters.input(), appContext);
 
         Assertions.assertEquals(applyTestParameters.expected, actual);
     }
@@ -117,12 +111,15 @@ class ExecutorDefaultTest {
                 .apply((CommandNode) applyTestParameters.input, appContext)
         ;
 
-        final var actual = executorDefault.apply(applyTestParameters.input(),appContext);
+        final var actual = executorDefault.apply(applyTestParameters.input(), appContext);
 
         Assertions.assertEquals(applyTestParameters.expected, actual);
     }
 
-    record ApplyTestParameters(AST input, Result expected) {
+    record ApplyTestParameters(
+            AST input,
+            Result expected
+    ) {
     }
 
 }

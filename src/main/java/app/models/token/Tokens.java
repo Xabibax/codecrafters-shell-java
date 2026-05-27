@@ -104,11 +104,12 @@ public class Tokens extends ArrayList<Token> {
         return subList(i, size());
     }
 
-    private record CollectorImpl<T, R>(Supplier<Tokens> supplier,
-                                       BiConsumer<Tokens, T> accumulator,
-                                       BinaryOperator<Tokens> combiner,
-                                       Function<Tokens, R> finisher,
-                                       Set<Characteristics> characteristics
+    private record CollectorImpl<T, R>(
+            Supplier<Tokens> supplier,
+            BiConsumer<Tokens, T> accumulator,
+            BinaryOperator<Tokens> combiner,
+            Function<Tokens, R> finisher,
+            Set<Characteristics> characteristics
     ) implements Collector<T, Tokens, R> {
 
         CollectorImpl(Supplier<Tokens> supplier,

@@ -14,6 +14,24 @@ import java.io.PrintStream;
 import java.nio.file.Files;
 
 public record ExecutorDefault() implements Executor {
+    private static OutputStream getOutputStream(AppContext appContext, Redirect redirect) throws GetOutputStreamIOException {
+        return switch (redirect.target()) {
+            case Redirect.RedirectToFile redirectToFile -> {
+                try {
+                    boolean newFile = redirectToFile.target()
+                            .toFile()
+                            .createNewFile()
+                            ;
+                    yield Files.newOutputStream(redirectToFile.target(), redirect.getOpenOptions());
+                } catch (IOException e) {
+                    throw new GetOutputStreamIOException(e);
+                }
+            }
+            case Redirect.RedirectToErr _ -> appContext.getStderr();
+            case Redirect.RedirectToOut _ -> appContext.getStdout();
+        };
+    }
+
     @Override
     public Result apply(AST ast, AppContext appContext) {
         return switch (ast) {
@@ -39,24 +57,6 @@ public record ExecutorDefault() implements Executor {
             return ResultDefault.handleExecutableException(e.getCause());
         }
 
-    }
-
-    private static OutputStream getOutputStream(AppContext appContext, Redirect redirect) throws GetOutputStreamIOException {
-        return switch (redirect.target()) {
-            case Redirect.RedirectToFile redirectToFile -> {
-                try {
-                    boolean newFile = redirectToFile.target()
-                            .toFile()
-                            .createNewFile()
-                            ;
-                    yield Files.newOutputStream(redirectToFile.target(), redirect.getOpenOptions());
-                } catch (IOException e) {
-                    throw new GetOutputStreamIOException(e);
-                }
-            }
-            case Redirect.RedirectToErr _ -> appContext.getStderr();
-            case Redirect.RedirectToOut _ -> appContext.getStdout();
-        };
     }
 
     private Result executeCommand(CommandNode commandNode, AppContext appContext) {

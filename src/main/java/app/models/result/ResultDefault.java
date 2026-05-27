@@ -2,7 +2,10 @@ package app.models.result;
 
 import java.io.IOException;
 
-public record ResultDefault(String message, int code) implements Result {
+public record ResultDefault(
+        String message,
+        int code
+) implements Result {
 
     final public static Result SUCCESS = ResultDefault.success();
 

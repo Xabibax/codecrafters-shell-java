@@ -3,13 +3,12 @@ package app.parser;
 import app.models.ast.AST;
 import app.models.ast.Redirect;
 import app.models.ast.RedirectNode;
-import app.models.token.operator.Operator;
 import app.models.token.Token;
 import app.models.token.Tokens;
+import app.models.token.operator.Operator;
 import app.models.token.operator.RedirectErr;
 import app.models.token.operator.RedirectOut;
 import app.models.token.word.Word;
-import app.models.token.word.Words;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -17,13 +16,14 @@ import java.util.List;
 public record ParserDefault() implements Parser {
 
 
-    private void getRedirectAst(Redirect redirect, Context context) {
+    private static boolean handleWord(Context context, Word word) {
+        return context.currWords()
+                .add(word);
     }
 
     @Override
     public AST apply(Tokens tokens) {
         Context context = new Context(tokens);
-        final var curWords = new Words();
 
         while (!context.isAtEnd()) {
             final var token = context.nextToken();
@@ -70,11 +70,6 @@ public record ParserDefault() implements Parser {
             }
         };
         context.setAst(ast);
-    }
-
-    private static boolean handleWord(Context context, Word word) {
-        return context.currWords()
-                .add(word);
     }
 
     private void handleCommandEnd(Context context) {

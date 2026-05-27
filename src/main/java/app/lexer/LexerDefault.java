@@ -20,7 +20,7 @@ public record LexerDefault() implements Lexer {
                     && !State.SINGLE_QUOTES_OPEN.equals(context.state)
                     && !context.isEscape()) {
                 Optional<Operator> operator = handleCharacter.handleOperator();
-                if(operator.isPresent()) {
+                if (operator.isPresent()) {
                     context.handleTokenEnd();
                     context.tokens.add(operator.get());
                     continue;
@@ -31,7 +31,7 @@ public record LexerDefault() implements Lexer {
         }
 
         if (context.tokenBuilder.isNonEmpty()) {
-            final var lastToken = context.tokenBuilder. build();
+            final var lastToken = context.tokenBuilder.build();
             context.tokens.add(lastToken);
         }
 

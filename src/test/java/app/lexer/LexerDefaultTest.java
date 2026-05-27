@@ -81,7 +81,7 @@ class LexerDefaultTest {
         final var expected = Tokens.of(Word.of("echo"),
                 Word.of(new DoubleQuoted("shell")),
                 Word.of(new DoubleQuoted("world's")),
-                Word.of(new Literal("script"),new DoubleQuoted(""), new Literal("example")));
+                Word.of(new Literal("script"), new DoubleQuoted(""), new Literal("example")));
 
         return new ApplyTestParameters(input, expected);
     }
@@ -96,6 +96,7 @@ class LexerDefaultTest {
 
         return new ApplyTestParameters(input, expected);
     }
+
     static ApplyTestParameters test8() {
         final var input = "cat /tmp/fox/banana nonexistent 1> /tmp/pig/rat.md";
         final var expected = Tokens.of(Word.of("cat"),
@@ -163,7 +164,6 @@ class LexerDefaultTest {
     }
 
 
-
     @ParameterizedTest
     @MethodSource("providedParameters")
     void apply(ApplyTestParameters applyTestParameters) {
@@ -174,6 +174,9 @@ class LexerDefaultTest {
         Assertions.assertEquals(applyTestParameters.expected, actual);
     }
 
-    record ApplyTestParameters(String input, Tokens expected) {
+    record ApplyTestParameters(
+            String input,
+            Tokens expected
+    ) {
     }
 }
