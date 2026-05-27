@@ -19,9 +19,7 @@ public record ExecutableDefault() implements Executable {
     public Result apply(CommandNode commandNode, AppContext appContext) {
 
         final var commands = merger(commandNode.parameters());
-        File file = appContext.handleExecutableSearch(commandNode.command())
-                .orElseThrow();
-        commands.addFirst(file.getAbsolutePath());
+        commands.addFirst(commandNode.command().value());
 
         final var pb = new ProcessBuilder(commands);
         pb.directory(appContext.getCurrentDirectory().toFile());
