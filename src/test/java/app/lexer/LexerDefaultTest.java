@@ -27,7 +27,10 @@ class LexerDefaultTest {
                 Arguments.of(test7()),
                 Arguments.of(test8()),
                 Arguments.of(test9()),
-                Arguments.of(test10())
+                Arguments.of(test10()),
+                Arguments.of(test11()),
+                Arguments.of(test12()),
+                Arguments.of(test13())
         );
     }
 
@@ -158,6 +161,8 @@ class LexerDefaultTest {
 
         return new ApplyTestParameters(input, expected);
     }
+
+
 
     @ParameterizedTest
     @MethodSource("providedParameters")

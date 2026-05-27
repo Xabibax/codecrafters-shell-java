@@ -23,7 +23,10 @@ class ParserDefaultTest {
                 Arguments.of(test1()),
                 Arguments.of(test2()),
                 Arguments.of(test3()),
-                Arguments.of(test4())
+                Arguments.of(test4()),
+                Arguments.of(test5()),
+                Arguments.of(test6()),
+                Arguments.of(test7())
 
         );
     }
@@ -62,6 +65,49 @@ class ParserDefaultTest {
 
         return new ApplyTestParameters(input, expected);
     }
+
+    static ApplyTestParameters test5() {
+        final var input = Tokens.of(Word.of("cat"),
+                Word.of("/tmp/fox/banana"),
+                Word.of("nonexistent"),
+                Operator.of("2>>"),
+                Word.of("/tmp/pig/rat.md"));
+        CommandNode commandNode = new CommandNode("cat","/tmp/fox/banana", "nonexistent");
+        Redirect.RedirectToFile redirectToFile = new Redirect.RedirectToFile(Path.of("/tmp/pig/rat.md"));
+        Redirect redirect = new Redirect(Redirect.RedirectSource.ERR, Redirect.RedirectType.APPEND, redirectToFile);
+        final var expected = new RedirectNode(commandNode, List.of(redirect));
+
+        return new ApplyTestParameters(input, expected);
+    }
+
+    static ApplyTestParameters test6() {
+        final var input = Tokens.of(Word.of("cat"),
+                Word.of("/tmp/fox/banana"),
+                Word.of("nonexistent"),
+                Operator.of(">>"),
+                Word.of("/tmp/pig/rat.md"));
+        CommandNode commandNode = new CommandNode("cat","/tmp/fox/banana", "nonexistent");
+        Redirect.RedirectToFile redirectToFile = new Redirect.RedirectToFile(Path.of("/tmp/pig/rat.md"));
+        Redirect redirect = new Redirect(Redirect.RedirectSource.OUT, Redirect.RedirectType.APPEND, redirectToFile);
+        final var expected = new RedirectNode(commandNode, List.of(redirect));
+
+        return new ApplyTestParameters(input, expected);
+    }
+
+    static ApplyTestParameters test7() {
+        final var input = Tokens.of(Word.of("cat"),
+                Word.of("/tmp/fox/banana"),
+                Word.of("nonexistent"),
+                Operator.of("1>>"),
+                Word.of("/tmp/pig/rat.md"));
+        CommandNode commandNode = new CommandNode("cat","/tmp/fox/banana", "nonexistent");
+        Redirect.RedirectToFile redirectToFile = new Redirect.RedirectToFile(Path.of("/tmp/pig/rat.md"));
+        Redirect redirect = new Redirect(Redirect.RedirectSource.OUT, Redirect.RedirectType.APPEND, redirectToFile);
+        final var expected = new RedirectNode(commandNode, List.of(redirect));
+
+        return new ApplyTestParameters(input, expected);
+    }
+
 
     @ParameterizedTest
     @MethodSource("providedParameters")

@@ -155,10 +155,22 @@ record HandleCharacter(Context context) {
     }
 
     public Optional<Operator> handleOperator() {
+        if(context.remainingChar() >= 3) {
+            String substring = context.input.substring(context().pos, context().pos + 3);
+            final Optional<Operator> operator = switch (substring) {
+                case "1>>" -> Optional.of(new RedirectOut(substring));
+                case "2>>" -> Optional.of(new RedirectErr(substring));
+                default -> Optional.empty();
+            };
+            if (operator.isPresent()) {
+                context.setPos(context.getPos() + 3);
+                return operator;
+            }
+        }
         if(context.remainingChar() >= 2) {
             String substring = context.input.substring(context().pos, context().pos + 2);
             final Optional<Operator> operator = switch (substring) {
-                case "1>" -> Optional.of(new RedirectOut(substring));
+                case ">>", "1>" -> Optional.of(new RedirectOut(substring));
                 case "2>" -> Optional.of(new RedirectErr(substring));
                 default -> Optional.empty();
             };
