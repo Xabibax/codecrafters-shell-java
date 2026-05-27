@@ -126,6 +126,39 @@ class LexerDefaultTest {
         return new ApplyTestParameters(input, expected);
     }
 
+    static ApplyTestParameters test11() {
+        final var input = "cat /tmp/fox/banana nonexistent 2>> /tmp/pig/rat.md";
+        final var expected = Tokens.of(Word.of("cat"),
+                Word.of("/tmp/fox/banana"),
+                Word.of("nonexistent"),
+                Operator.of("2>>"),
+                Word.of("/tmp/pig/rat.md"));
+
+        return new ApplyTestParameters(input, expected);
+    }
+
+    static ApplyTestParameters test12() {
+        final var input = "cat /tmp/fox/banana nonexistent 1>> /tmp/pig/rat.md";
+        final var expected = Tokens.of(Word.of("cat"),
+                Word.of("/tmp/fox/banana"),
+                Word.of("nonexistent"),
+                Operator.of("1>>"),
+                Word.of("/tmp/pig/rat.md"));
+
+        return new ApplyTestParameters(input, expected);
+    }
+
+    static ApplyTestParameters test13() {
+        final var input = "cat /tmp/fox/banana nonexistent >> /tmp/pig/rat.md";
+        final var expected = Tokens.of(Word.of("cat"),
+                Word.of("/tmp/fox/banana"),
+                Word.of("nonexistent"),
+                Operator.of(">>"),
+                Word.of("/tmp/pig/rat.md"));
+
+        return new ApplyTestParameters(input, expected);
+    }
+
     @ParameterizedTest
     @MethodSource("providedParameters")
     void apply(ApplyTestParameters applyTestParameters) {

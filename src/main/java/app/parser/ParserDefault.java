@@ -55,8 +55,7 @@ public record ParserDefault() implements Parser {
                 if (!(token instanceof Word)) {
                     throw new IllegalArgumentException("A redirection excpect a word");
                 }
-                Redirect redirect = new Redirect(Redirect.RedirectSource.ERR,
-                        Redirect.RedirectType.WRITE,
+                Redirect redirect = new Redirect(redirectErr,
                         Path.of(token.value()));
                 yield new RedirectNode(context.getAst(), List.of(redirect));
             }
@@ -65,8 +64,7 @@ public record ParserDefault() implements Parser {
                 if (!(token instanceof Word)) {
                     throw new IllegalArgumentException("A redirection excpect a word");
                 }
-                Redirect redirect = new Redirect(Redirect.RedirectSource.OUT,
-                        Redirect.RedirectType.WRITE,
+                Redirect redirect = new Redirect(redirectOut,
                         Path.of(token.value()));
                 yield new RedirectNode(context.getAst(), List.of(redirect));
             }

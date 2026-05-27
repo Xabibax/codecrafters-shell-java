@@ -26,8 +26,7 @@ public record ExecutorDefault() implements Executor {
         try {
             redirectNode.redirects()
                     .forEach(redirect -> {
-                        Redirect.RedirectTarget target = redirect.target();
-                        final OutputStream output = getOutputStream(appContext, target);
+                        final OutputStream output = getOutputStream(appContext, redirect);
                         final PrintStream printStream = new PrintStream(output);
                         switch (redirect.source()) {
                             case ERR -> appContext.setStderr(printStream);
@@ -42,11 +41,11 @@ public record ExecutorDefault() implements Executor {
 
     }
 
-    private static OutputStream getOutputStream(AppContext appContext, Redirect.RedirectTarget target) throws GetOutputStreamIOException {
-        return switch (target) {
+    private static OutputStream getOutputStream(AppContext appContext, Redirect redirect) throws GetOutputStreamIOException {
+        return switch (redirect.target()) {
             case Redirect.RedirectToFile redirectToFile -> {
                 try {
-                    yield Files.newOutputStream(redirectToFile.target());
+                    yield Files.newOutputStream(redirectToFile.target(), redirect.getOpenOptions());
                 } catch (IOException e) {
                     throw new GetOutputStreamIOException(e);
                 }
