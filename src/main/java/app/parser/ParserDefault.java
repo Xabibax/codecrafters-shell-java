@@ -49,28 +49,29 @@ public record ParserDefault() implements Parser {
 
     private void handleOperator(Context context, Operator operator) {
         handleCommandEnd(context);
-        switch (operator) {
+        AST ast = switch (operator) {
             case RedirectErr redirectErr -> {
                 Token token = context.nextToken();
-                if(! (token instanceof Word)) {
+                if (!(token instanceof Word)) {
                     throw new IllegalArgumentException("A redirection excpect a word");
                 }
                 Redirect redirect = new Redirect(Redirect.RedirectSource.ERR,
                         Redirect.RedirectType.WRITE,
                         Path.of(token.value()));
-                new RedirectNode(context.getAst(), List.of(redirect));
+                yield new RedirectNode(context.getAst(), List.of(redirect));
             }
             case RedirectOut redirectOut -> {
                 Token token = context.nextToken();
-                if(! (token instanceof Word)) {
+                if (!(token instanceof Word)) {
                     throw new IllegalArgumentException("A redirection excpect a word");
                 }
                 Redirect redirect = new Redirect(Redirect.RedirectSource.OUT,
                         Redirect.RedirectType.WRITE,
                         Path.of(token.value()));
-                new RedirectNode(context.getAst(), List.of(redirect));
+                yield new RedirectNode(context.getAst(), List.of(redirect));
             }
-        }
+        };
+        context.setAst(ast);
     }
 
     private static boolean handleWord(Context context, Word word) {
