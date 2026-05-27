@@ -2,6 +2,7 @@ package app;
 
 import app.executor.ExecutorDefault;
 import app.executor.executable.ExecutableDefault;
+import app.executor.executable.ExecutableNotFound;
 import app.executor.executable.builtin.*;
 import app.lexer.LexerDefault;
 import app.parser.ParserDefault;
@@ -16,6 +17,7 @@ public class Factory {
     private Pwd pwd;
     private Echo echo;
     private ExecutableDefault executableDefault;
+    private ExecutableNotFound executableNotFound;
 
     public ParserDefault parser() {
         if (parser == null) {
@@ -43,6 +45,13 @@ public class Factory {
             executableDefault = new ExecutableDefault();
         }
         return executableDefault;
+    }
+
+    public ExecutableNotFound executableNotFound() {
+        if (executableNotFound == null) {
+            executableNotFound = new ExecutableNotFound();
+        }
+        return executableNotFound;
     }
 
     public Type type() {

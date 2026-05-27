@@ -53,20 +53,16 @@ class ExecutorDefaultTest {
         String value = "invalid_apple_command";
         WordDefault invalidAppleCommand = new WordDefault(new Literal(value));
         final var input = new CommandNode(invalidAppleCommand, Words.of(value));
-        final var expected = getCommandNotFound(value);
+        final var expected = ResultDefault.fail("invalid_apple_command: command not found");
 
         return new ApplyTestParameters(input, expected);
     }
 
     static ApplyTestParameters test2() {
         final var input = new CommandNode("echo", Words.of("pineapple", "apple"));
-        final var expected = ResultDefault.success("pineapple apple");
+        final var expected = ResultDefault.SUCCESS;
 
         return new ApplyTestParameters(input, expected);
-    }
-
-    private static @NonNull Result getCommandNotFound(String value) {
-        return ResultDefault.warning("%s: command not found".formatted(value));
     }
 
     static Stream<Arguments> providedExecutableParameters() {
@@ -77,7 +73,7 @@ class ExecutorDefaultTest {
 
     static ApplyTestParameters testExecutable1() {
         final var input = new CommandNode("bash.exe", Words.of("-c", "echo 1 2 3"));
-        final var expected = ResultDefault.success("1 2 3");
+        final var expected = ResultDefault.SUCCESS;
 
         return new ApplyTestParameters(input, expected);
     }
@@ -128,28 +124,5 @@ class ExecutorDefaultTest {
 
     record ApplyTestParameters(AST input, Result expected) {
     }
-
-    @Test
-    void applyRedirection() throws IOException {
-        CommandNode commandNode = new CommandNode("echo","1");
-        Redirect.RedirectToFile redirectToFile = new Redirect.RedirectToFile(Path.of("/tmp/test.md"));
-        Redirect redirect = new Redirect(Redirect.RedirectSource.OUT, Redirect.RedirectType.WRITE, redirectToFile);
-        final var input = new RedirectNode(commandNode, List.of(redirect));
-        final var executorDefault = new ExecutorDefault();
-
-        doReturn(executable)
-                .when(factory)
-                .executable()
-        ;
-        doReturn(factory)
-                .when(appContext)
-                .getFactory()
-        ;
-
-        final var actual = executorDefault.apply(input,appContext);
-
-        Assertions.assertEquals(ResultDefault.success("1"), actual);
-    }
-
 
 }

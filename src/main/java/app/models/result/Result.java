@@ -7,8 +7,7 @@ public interface Result {
     int WARNING = 2;
     int IO_FAIL = 3;
 
-    String getOutput();
-    String getErrorOutput();
-    int getCode();
+    String message();
+    int code();
 
 }

@@ -37,13 +37,16 @@ public enum Type implements BiFunction<AppContext, CommandNode, Result> {
     }
 
     private static Result handleBlank() {
-        return ResultDefault.WARNING;
+        return ResultDefault.SUCCESS;
     }
 
     @Override
     public Result apply(AppContext appContext, CommandNode commandNode) {
         return switch (this) {
-            case NOT_FOUND -> handleCommandNotFound(commandNode);
+            case NOT_FOUND -> appContext.getFactory()
+                    .executableNotFound()
+                    .apply(commandNode, appContext)
+            ;
             case EXIT -> appContext.getFactory()
                     .exit()
                     .apply(commandNode, appContext)
