@@ -2,6 +2,7 @@ package app.models.result;
 
 import lombok.Getter;
 
+import java.io.IOException;
 import java.io.OutputStream;
 
 public record ResultDefault(String output, String errorOutput, int code) implements Result {
@@ -20,8 +21,6 @@ public record ResultDefault(String output, String errorOutput, int code) impleme
 
     final public static Result SUCCESS = ResultDefault.success("");
     final public static Result WARNING = ResultDefault.warning("");
-    final public static Result FAIL = ResultDefault.fail("");
-    final public static Result IO_FAIL = ResultDefault.ioFail("");
 
     public static Result success(String output) {
         return new ResultDefault(output, Result.SUCCESS);
@@ -37,6 +36,13 @@ public record ResultDefault(String output, String errorOutput, int code) impleme
 
     public static Result ioFail(String output) {
         return new ResultDefault(null, output, Result.IO_FAIL);
+    }
+
+    public static Result handleExecutableException(Exception e) {
+        return switch (e) {
+            case IOException _ -> ioFail(e.getMessage());
+            default -> fail(e.getMessage());
+        };
     }
 
     @Override

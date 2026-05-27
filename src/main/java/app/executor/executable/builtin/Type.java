@@ -7,6 +7,7 @@ import app.models.result.Result;
 import app.models.result.ResultDefault;
 import app.models.token.Token;
 
+import java.io.IOException;
 import java.util.Objects;
 import java.util.function.Function;
 
@@ -21,7 +22,9 @@ public record Type() implements Executable {
                 .getFirst();
         final var message = type(parameter, appContext);
 
-        return new ResultDefault(message, Result.SUCCESS);
+        appContext.getStdout().println(message);
+
+        return ResultDefault.SUCCESS;
     }
 
     private String type(Token token, AppContext appContext) {

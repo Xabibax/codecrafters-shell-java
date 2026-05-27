@@ -20,8 +20,8 @@ public class AppContext {
     private Path currentDirectory;
 
     private InputStream stdin;
-    private OutputStream stdout;
-    private OutputStream stderr;
+    private PrintStream stdout;
+    private PrintStream stderr;
 
     private BufferedReader br;
 
@@ -75,5 +75,13 @@ public class AppContext {
         } catch (IOException ioe) {
             throw new IOError(ioe);
         }
+    }
+
+    public void IOReset() {
+        this.stdin = System.in;
+        getStdout().flush();
+        this.stdout = System.out;
+        getStderr().flush();
+        this.stderr = System.err;
     }
 }

@@ -5,6 +5,8 @@ import app.Factory;
 import app.executor.executable.ExecutableDefault;
 import app.models.ast.AST;
 import app.models.ast.CommandNode;
+import app.models.ast.Redirect;
+import app.models.ast.RedirectNode;
 import app.models.result.Result;
 import app.models.result.ResultDefault;
 import app.models.token.word.WordDefault;
@@ -13,6 +15,7 @@ import app.models.token.word.wordpart.Literal;
 import org.jspecify.annotations.NonNull;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -21,6 +24,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -123,4 +128,28 @@ class ExecutorDefaultTest {
 
     record ApplyTestParameters(AST input, Result expected) {
     }
+
+    @Test
+    void applyRedirection() throws IOException {
+        CommandNode commandNode = new CommandNode("echo","1");
+        Redirect.RedirectToFile redirectToFile = new Redirect.RedirectToFile(Path.of("/tmp/test.md"));
+        Redirect redirect = new Redirect(Redirect.RedirectSource.OUT, Redirect.RedirectType.WRITE, redirectToFile);
+        final var input = new RedirectNode(commandNode, List.of(redirect));
+        final var executorDefault = new ExecutorDefault();
+
+        doReturn(executable)
+                .when(factory)
+                .executable()
+        ;
+        doReturn(factory)
+                .when(appContext)
+                .getFactory()
+        ;
+
+        final var actual = executorDefault.apply(input,appContext);
+
+        Assertions.assertEquals(ResultDefault.success("1"), actual);
+    }
+
+
 }

@@ -6,7 +6,7 @@ import app.models.ast.CommandNode;
 import app.models.result.Result;
 import app.models.result.ResultDefault;
 
-import java.util.function.Function;
+import java.io.IOException;
 
 public record Echo() implements Executable {
 
@@ -15,6 +15,8 @@ public record Echo() implements Executable {
         String message = commandNode.parameters()
                 .toString();
 
-        return ResultDefault.success(message);
+        appContext.getStdout().println(message);
+
+        return ResultDefault.SUCCESS;
     }
 }

@@ -3,11 +3,12 @@ import app.AppContext;
 public static final String SHELL_PROMPT = "$ ";
 
 @SuppressWarnings("InfiniteLoopStatement")
-void main() {
+void main() throws IOException {
     AppContext appContext = new AppContext();
     do {
         printPrompt();
         handleInput(appContext);
+        appContext.IOReset();
     } while (true);
 }
 

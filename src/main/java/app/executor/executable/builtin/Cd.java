@@ -4,11 +4,11 @@ import app.AppContext;
 import app.executor.executable.Executable;
 import app.models.ast.CommandNode;
 import app.models.result.Result;
+import app.models.result.ResultDefault;
 
 import java.io.IOException;
 import java.nio.file.Path;
 
-import static app.models.result.ResultDefault.FAIL;
 import static app.models.result.ResultDefault.SUCCESS;
 
 public record Cd() implements Executable {
@@ -40,7 +40,7 @@ public record Cd() implements Executable {
             Path canonicalDirectory = handleChangeCurrentDirectory(currentDirectory, newDirectory);
             appContext.setCurrentDirectory(canonicalDirectory);
         } catch (IOException e) {
-            return FAIL;
+            return ResultDefault.handleExecutableException(e);
         }
         return SUCCESS;
     }

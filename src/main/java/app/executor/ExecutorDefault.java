@@ -10,6 +10,7 @@ import app.models.result.ResultDefault;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.PrintStream;
 import java.nio.file.Files;
 
 public record ExecutorDefault() implements Executor {
@@ -26,18 +27,17 @@ public record ExecutorDefault() implements Executor {
             redirectNode.redirects()
                     .forEach(redirect -> {
                         Redirect.RedirectTarget target = redirect.target();
-                        final OutputStream output;
-                        output = getOutputStream(appContext, target);
-
+                        final OutputStream output = getOutputStream(appContext, target);
+                        final PrintStream printStream = new PrintStream(output);
                         switch (redirect.source()) {
-                            case ERR -> appContext.setStderr(output);
-                            case OUT -> appContext.setStdout(output);
+                            case ERR -> appContext.setStderr(printStream);
+                            case OUT -> appContext.setStdout(printStream);
                         }
 
                     });
             return redirectNode.apply(appContext);
         } catch (GetOutputStreamIOException e) {
-            return ResultDefault.fail(e.getMessage());
+            return ResultDefault.handleExecutableException(e.getCause());
         }
 
     }
@@ -51,8 +51,8 @@ public record ExecutorDefault() implements Executor {
                     throw new GetOutputStreamIOException(e);
                 }
             }
-            case Redirect.RedirectToErr redirectToErr -> appContext.getStderr();
-            case Redirect.RedirectToOut redirectToOut -> appContext.getStdout();
+            case Redirect.RedirectToErr _ -> appContext.getStderr();
+            case Redirect.RedirectToOut _ -> appContext.getStdout();
         };
     }
 

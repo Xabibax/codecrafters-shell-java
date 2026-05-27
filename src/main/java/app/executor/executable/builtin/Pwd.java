@@ -6,6 +6,8 @@ import app.models.ast.CommandNode;
 import app.models.result.Result;
 import app.models.result.ResultDefault;
 
+import java.io.IOException;
+import java.util.Arrays;
 import java.util.function.Function;
 
 public record Pwd() implements Executable {
@@ -15,6 +17,8 @@ public record Pwd() implements Executable {
         final var currentDirectory = appContext.getCurrentDirectory()
                 .toString();
 
-        return ResultDefault.success(currentDirectory);
+        appContext.getStdout().println(currentDirectory);
+
+        return ResultDefault.SUCCESS;
     }
 }

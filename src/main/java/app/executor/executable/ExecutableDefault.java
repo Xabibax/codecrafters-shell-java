@@ -7,11 +7,8 @@ import app.models.result.ResultDefault;
 import app.models.token.word.Word;
 import app.models.token.word.Words;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static app.models.result.ResultDefault.IO_FAIL;
 
 
 public record ExecutableDefault() implements Executable {
@@ -37,11 +34,10 @@ public record ExecutableDefault() implements Executable {
                     .transferTo(appContext.getStdout());
             process.getErrorStream()
                     .transferTo(appContext.getStderr());
-
-            return new ResultDefault("", exitValue);
+            return exitValue == 0 ? ResultDefault.SUCCESS : new ResultDefault("", exitValue);
 
         } catch (Exception e) {
-            return handleExecutableException(e);
+            return ResultDefault.handleExecutableException(e);
         }
     }
 
@@ -51,10 +47,4 @@ public record ExecutableDefault() implements Executable {
                 .collect(Collectors.toList());
     }
 
-    private Result handleExecutableException(Exception e) {
-        return switch (e) {
-            case IOException _ -> IO_FAIL;
-            default -> ResultDefault.FAIL;
-        };
-    }
 }
