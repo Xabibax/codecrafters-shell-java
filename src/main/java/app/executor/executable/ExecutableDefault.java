@@ -7,7 +7,9 @@ import app.models.result.ResultDefault;
 import app.models.token.word.Word;
 import app.models.token.word.Words;
 
+import java.io.File;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -17,8 +19,9 @@ public record ExecutableDefault() implements Executable {
     public Result apply(CommandNode commandNode, AppContext appContext) {
 
         final var commands = merger(commandNode.parameters());
-
-        commands.addFirst(commandNode.command().value());
+        File file = appContext.handleExecutableSearch(commandNode.command())
+                .orElseThrow();
+        commands.addFirst(file.getAbsolutePath());
 
         final var pb = new ProcessBuilder(commands);
         pb.directory(appContext.getCurrentDirectory().toFile());
