@@ -25,7 +25,6 @@ public record ExecutableDefault() implements Executable {
         commands.addFirst(commandPath);
 
         final var pb = new ProcessBuilder(commands);
-        pb.redirectErrorStream(true);
 
         try {
             final var process = pb.start();
