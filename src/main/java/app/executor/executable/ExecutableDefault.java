@@ -17,12 +17,8 @@ public record ExecutableDefault() implements Executable {
     public Result apply(CommandNode commandNode, AppContext appContext) {
 
         final var commands = merger(commandNode.parameters());
-        final var commandPath = appContext.handleExecutableSearch(commandNode.command())
-                .orElseThrow()
-                .getAbsolutePath()
-                ;
 
-        commands.addFirst(commandPath);
+        commands.addFirst(commandNode.command().value());
 
         final var pb = new ProcessBuilder(commands);
 
